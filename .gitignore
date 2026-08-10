@@ -34,3 +34,5 @@ next-env.d.ts
 
 # Skill pack temp files
 3d-scroll-website-skill-pack*
+
+.vercel
