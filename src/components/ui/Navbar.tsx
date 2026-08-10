@@ -44,9 +44,11 @@ export function Navbar() {
           </a>
         </div>
 
-        {/* Start Project CTA */}
+        {/* Hire Agency CTA - Redirects to Google Form */}
         <a
-          href="#gear"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSdgKjJwaQ2tXy_GmTArmQPoomcawP-KB9g9tyM9g4FKVRHTGw/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
           className="group inline-flex items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-[11px] md:text-xs font-bold text-zinc-950 transition-all duration-300 hover:bg-zinc-200 shadow-md shrink-0"
         >
           <span>Hire Agency</span>
