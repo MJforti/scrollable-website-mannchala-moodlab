@@ -15,7 +15,7 @@ const TECH_SPECS = [
     title: "High-Octane 3D Motion",
     description: "Multi-layered raytraced assets, liquid dynamics, and custom lighting designed specifically for vertical social feeds.",
     icon: FilmStrip,
-    position: "top-1/4 left-6 md:left-16",
+    position: "top-28 inset-x-4 max-w-[calc(100vw-2rem)] md:top-1/4 md:left-16 md:right-auto md:max-w-sm",
   },
   {
     id: "gear-spec-2",
@@ -25,7 +25,7 @@ const TECH_SPECS = [
     title: "3D Mascots & Avatars",
     description: "Designing stylized 3D brand mascots and virtual creators that host campaigns and boost engagement.",
     icon: UserCircle,
-    position: "top-1/3 right-6 md:right-16",
+    position: "top-32 inset-x-4 max-w-[calc(100vw-2rem)] md:top-1/3 md:right-16 md:left-auto md:max-w-sm",
   },
   {
     id: "gear-spec-3",
@@ -35,7 +35,7 @@ const TECH_SPECS = [
     title: "Omnichannel Social Kits",
     description: "Lossless frame-sequence rendering optimized for seamless playback across Instagram, TikTok, YouTube Shorts, and Web.",
     icon: Devices,
-    position: "bottom-1/4 left-6 md:left-24",
+    position: "bottom-20 inset-x-4 max-w-[calc(100vw-2rem)] md:bottom-1/4 md:left-24 md:right-auto md:max-w-sm",
   },
 ];
 
@@ -48,31 +48,7 @@ export function GearShowcaseSection() {
   const currentFrameIndexRef = useRef(0);
   const prevVisibleIdsRef = useRef("");
 
-  const [loaded, setLoaded] = useState(false);
   const [visibleSpecs, setVisibleSpecs] = useState<string[]>([]);
-
-  // Preload frames
-  useEffect(() => {
-    let loadedCount = 0;
-    const imgs: HTMLImageElement[] = [];
-
-    for (let i = 1; i <= FRAME_COUNT; i++) {
-      const img = new Image();
-      const num = String(i).padStart(4, "0");
-      img.src = `/frames/gear/frame_${num}.jpg`;
-
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === FRAME_COUNT) setLoaded(true);
-      };
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount === FRAME_COUNT) setLoaded(true);
-      };
-      imgs.push(img);
-    }
-    framesRef.current = imgs;
-  }, []);
 
   // Cover-fit Canvas Drawer
   const drawFrame = useCallback((index: number) => {
@@ -128,17 +104,40 @@ export function GearShowcaseSection() {
     drawFrame(currentFrameIndexRef.current);
   }, [drawFrame]);
 
+  // Load frames silently in background
   useEffect(() => {
-    if (!loaded) return;
+    const imgs: HTMLImageElement[] = [];
+
+    for (let i = 1; i <= FRAME_COUNT; i++) {
+      const img = new Image();
+      const num = String(i).padStart(4, "0");
+      img.src = `/frames/gear/frame_${num}.jpg`;
+
+      if (i === 1) {
+        img.onload = () => {
+          resizeCanvas();
+          drawFrame(0);
+        };
+      } else {
+        img.onload = () => {
+          if (currentFrameIndexRef.current === i - 1) {
+            drawFrame(i - 1);
+          }
+        };
+      }
+      imgs.push(img);
+    }
+    framesRef.current = imgs;
+  }, [drawFrame, resizeCanvas]);
+
+  useEffect(() => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
     return () => window.removeEventListener("resize", resizeCanvas);
-  }, [loaded, resizeCanvas]);
+  }, [resizeCanvas]);
 
   // Scroll handler
   useEffect(() => {
-    if (!loaded) return;
-
     const handleScroll = () => {
       if (tickingRef.current) return;
       tickingRef.current = true;
@@ -193,14 +192,13 @@ export function GearShowcaseSection() {
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loaded, drawFrame]);
+  }, [drawFrame]);
 
   return (
     <section
       id="gear"
       ref={sectionRef}
-      className="relative w-full bg-[#09090b] text-white border-t border-white/10"
-      style={{ height: "200vh" }}
+      className="relative w-full bg-[#09090b] text-white border-t border-white/10 max-md:h-[180vh] h-[200vh]"
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover opacity-90" />
@@ -208,10 +206,10 @@ export function GearShowcaseSection() {
         {/* Section Intro Overlay */}
         <div
           ref={introTextRef}
-          className="absolute top-24 inset-x-0 flex flex-col items-center text-center px-6 pointer-events-none z-20"
+          className="absolute top-20 sm:top-24 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
         >
           <EyebrowBadge>SOCIAL MOTION & CONTENT ENGINE</EyebrowBadge>
-          <h2 className="mt-4 text-3xl sm:text-5xl font-semibold tracking-tighter text-white max-w-2xl leading-tight">
+          <h2 className="mt-3 sm:mt-4 text-2xl sm:text-5xl font-semibold tracking-tighter text-white max-w-2xl leading-tight">
             Cinematic 3D Reels & <br />
             <span className="text-zinc-400 font-normal">Social Motion Production</span>
           </h2>
@@ -224,25 +222,25 @@ export function GearShowcaseSection() {
           return (
             <div
               key={spec.id}
-              className={`absolute ${spec.position} max-w-sm pointer-events-auto transition-all duration-500 ease-out z-30 ${
+              className={`absolute ${spec.position} pointer-events-auto transition-all duration-500 ease-out z-30 ${
                 isVisible
                   ? "opacity-100 translate-y-0 scale-100"
                   : "opacity-0 translate-y-4 scale-95 pointer-events-none"
               }`}
             >
-              <div className="card-surface p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-medium text-zinc-400 tracking-wider">
+              <div className="card-surface p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                  <span className="text-[9px] sm:text-[10px] font-mono font-medium text-zinc-400 tracking-wider">
                     {spec.badge}
                   </span>
-                  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white">
-                    <Icon size={13} weight="bold" />
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <Icon size={12} weight="bold" />
                   </div>
                 </div>
-                <h3 className="text-base font-semibold text-white tracking-tight mb-1">
+                <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight mb-1">
                   {spec.title}
                 </h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
+                <p className="text-[11px] sm:text-xs leading-relaxed text-zinc-400">
                   {spec.description}
                 </p>
               </div>
@@ -251,9 +249,9 @@ export function GearShowcaseSection() {
         })}
 
         {/* Minimal Bottom Indicator */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-6 z-20 px-6 md:px-12 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-500">
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-500">
           <span>02 / SOCIAL MOTION SUITE</span>
-          <span>MANNCHALA MOODLAB</span>
+          <span className="hidden sm:inline">MANNCHALA MOODLAB</span>
           <span>Scroll ↓</span>
         </div>
       </div>

@@ -15,7 +15,7 @@ const ANNOTATIONS = [
     title: "Thumb-Stopping Content",
     description: "High-retention 3D reels, TikTok motion, and short-form assets engineered to hook viewers in 0.5 seconds.",
     icon: FilmStrip,
-    position: "top-1/4 left-6 md:left-16",
+    position: "top-28 inset-x-4 max-w-[calc(100vw-2rem)] md:top-1/4 md:left-16 md:right-auto md:max-w-sm",
   },
   {
     id: "card-2",
@@ -25,7 +25,7 @@ const ANNOTATIONS = [
     title: "3D Social Identities",
     description: "Building kinetic 3D logos, virtual brand mascots, and immersive spatial kits tailored for digital feeds.",
     icon: Sparkle,
-    position: "top-1/3 right-6 md:right-16",
+    position: "top-32 inset-x-4 max-w-[calc(100vw-2rem)] md:top-1/3 md:right-16 md:left-auto md:max-w-sm",
   },
   {
     id: "card-3",
@@ -35,7 +35,7 @@ const ANNOTATIONS = [
     title: "Trend Engineering & Reach",
     description: "Architecting cultural hype campaigns and organic social strategies that turn casual scrollers into cult followers.",
     icon: TrendUp,
-    position: "bottom-1/4 left-6 md:left-24",
+    position: "bottom-20 inset-x-4 max-w-[calc(100vw-2rem)] md:bottom-1/4 md:left-24 md:right-auto md:max-w-sm",
   },
 ];
 
@@ -48,34 +48,7 @@ export function HeroSection() {
   const currentFrameIndexRef = useRef(0);
   const prevVisibleIdsRef = useRef("");
 
-  const [loaded, setLoaded] = useState(false);
-  const [loadProgress, setLoadProgress] = useState(0);
   const [visibleCards, setVisibleCards] = useState<string[]>([]);
-
-  // Preload frames
-  useEffect(() => {
-    let loadedCount = 0;
-    const imgs: HTMLImageElement[] = [];
-
-    for (let i = 1; i <= FRAME_COUNT; i++) {
-      const img = new Image();
-      const num = String(i).padStart(4, "0");
-      img.src = `/frames/smartphone/frame_${num}.jpg`;
-
-      img.onload = () => {
-        loadedCount++;
-        setLoadProgress(Math.round((loadedCount / FRAME_COUNT) * 100));
-        if (loadedCount === FRAME_COUNT) setLoaded(true);
-      };
-      img.onerror = () => {
-        loadedCount++;
-        setLoadProgress(Math.round((loadedCount / FRAME_COUNT) * 100));
-        if (loadedCount === FRAME_COUNT) setLoaded(true);
-      };
-      imgs.push(img);
-    }
-    framesRef.current = imgs;
-  }, []);
 
   // Cover-fit Canvas Drawer
   const drawFrame = useCallback((index: number) => {
@@ -107,6 +80,7 @@ export function HeroSection() {
       drawW = ch * imgRatio;
     }
 
+    // Zoom on mobile for readability
     if (window.innerWidth <= 768) {
       drawW *= 1.25;
       drawH *= 1.25;
@@ -131,17 +105,40 @@ export function HeroSection() {
     drawFrame(currentFrameIndexRef.current);
   }, [drawFrame]);
 
+  // Load frames silently in background
   useEffect(() => {
-    if (!loaded) return;
+    const imgs: HTMLImageElement[] = [];
+
+    for (let i = 1; i <= FRAME_COUNT; i++) {
+      const img = new Image();
+      const num = String(i).padStart(4, "0");
+      img.src = `/frames/smartphone/frame_${num}.jpg`;
+
+      if (i === 1) {
+        img.onload = () => {
+          resizeCanvas();
+          drawFrame(0);
+        };
+      } else {
+        img.onload = () => {
+          if (currentFrameIndexRef.current === i - 1) {
+            drawFrame(i - 1);
+          }
+        };
+      }
+      imgs.push(img);
+    }
+    framesRef.current = imgs;
+  }, [drawFrame, resizeCanvas]);
+
+  useEffect(() => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
     return () => window.removeEventListener("resize", resizeCanvas);
-  }, [loaded, resizeCanvas]);
+  }, [resizeCanvas]);
 
-  // Scroll Handler (Precise 200vh continuous section height)
+  // Scroll Handler
   useEffect(() => {
-    if (!loaded) return;
-
     const handleScroll = () => {
       if (tickingRef.current) return;
       tickingRef.current = true;
@@ -197,32 +194,14 @@ export function HeroSection() {
     handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loaded, drawFrame]);
+  }, [drawFrame]);
 
   return (
     <section
       id="hero"
       ref={sectionRef}
-      className="relative w-full bg-[#09090b]"
-      style={{ height: "200vh" }}
+      className="relative w-full bg-[#09090b] max-md:h-[180vh] h-[200vh]"
     >
-      {/* Preloading Overlay */}
-      {!loaded && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#09090b] px-6 text-white">
-          <div className="w-8 h-8 rounded-full border border-white/20 border-t-white animate-spin mb-6" />
-          <EyebrowBadge>MANNCHALA MOODLAB // 3D SOCIAL AGENCY</EyebrowBadge>
-          <div className="mt-4 w-40 h-0.5 bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-white transition-all duration-200 ease-out"
-              style={{ width: `${loadProgress}%` }}
-            />
-          </div>
-          <span className="mt-2 font-mono text-[10px] text-zinc-500">
-            {loadProgress}%
-          </span>
-        </div>
-      )}
-
       {/* Sticky Viewport */}
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover" />
@@ -230,11 +209,11 @@ export function HeroSection() {
         {/* Hero Overlay Text */}
         <div
           ref={heroTextRef}
-          className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-28 px-6 text-center z-20 transition-opacity duration-300 ease-out"
+          className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-20 px-4 md:py-28 md:px-6 text-center z-20 transition-opacity duration-300 ease-out"
         >
-          <div className="flex flex-col items-center gap-4 max-w-3xl">
+          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-3xl">
             <EyebrowBadge>3D SOCIAL MEDIA & CONTENT AGENCY</EyebrowBadge>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-tighter text-white leading-[1.05]">
+            <h1 className="text-3xl sm:text-6xl md:text-7xl font-semibold tracking-tighter text-white leading-[1.08] sm:leading-[1.05]">
               Viral 3D Content & <br />
               <span className="text-zinc-400 font-normal">
                 Social Motion Engineering
@@ -242,9 +221,9 @@ export function HeroSection() {
             </h1>
           </div>
 
-          <div className="flex flex-col items-center gap-1.5 font-mono text-[10px] text-zinc-500 uppercase tracking-widest">
+          <div className="flex flex-col items-center gap-1 font-mono text-[9px] sm:text-[10px] text-zinc-500 uppercase tracking-widest">
             <span>Scroll to Explore 3D Social Lab</span>
-            <CaretDown size={13} className="animate-bounce text-white" />
+            <CaretDown size={12} className="animate-bounce text-white" />
           </div>
         </div>
 
@@ -255,25 +234,25 @@ export function HeroSection() {
           return (
             <div
               key={card.id}
-              className={`absolute ${card.position} max-w-sm pointer-events-auto transition-all duration-500 ease-out z-30 ${
+              className={`absolute ${card.position} pointer-events-auto transition-all duration-500 ease-out z-30 ${
                 isVisible
                   ? "opacity-100 translate-y-0 scale-100"
                   : "opacity-0 translate-y-4 scale-95 pointer-events-none"
               }`}
             >
-              <div className="card-surface p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-medium text-zinc-400 tracking-wider">
+              <div className="card-surface p-4 sm:p-6">
+                <div className="flex items-center justify-between mb-2.5 sm:mb-3">
+                  <span className="text-[9px] sm:text-[10px] font-mono font-medium text-zinc-400 tracking-wider">
                     {card.badge}
                   </span>
-                  <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white">
-                    <Icon size={13} weight="bold" />
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <Icon size={12} weight="bold" />
                   </div>
                 </div>
-                <h3 className="text-base font-semibold text-white tracking-tight mb-1">
+                <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight mb-1">
                   {card.title}
                 </h3>
-                <p className="text-xs leading-relaxed text-zinc-400">
+                <p className="text-[11px] sm:text-xs leading-relaxed text-zinc-400">
                   {card.description}
                 </p>
               </div>
@@ -282,9 +261,9 @@ export function HeroSection() {
         })}
 
         {/* Minimal Bottom Indicator */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-6 z-20 px-6 md:px-12 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-zinc-500">
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-500">
           <span>01 / 3D REELS HERO</span>
-          <span>MANNCHALA MOODLAB</span>
+          <span className="hidden sm:inline">MANNCHALA MOODLAB</span>
           <span>Scroll ↓</span>
         </div>
       </div>

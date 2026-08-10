@@ -41,36 +41,36 @@ const CAPABILITIES = [
 
 export function BentoFeatures() {
   return (
-    <section id="bento" className="w-full bg-[#09090b] text-white px-6 py-24 md:px-12 md:py-32 border-t border-white/10">
+    <section id="bento" className="w-full bg-[#09090b] text-white px-4 py-16 md:px-12 md:py-32 border-t border-white/10">
       <div className="mx-auto max-w-[1200px]">
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-14">
+        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
           <EyebrowBadge>SOCIAL MEDIA AGENCY SERVICES</EyebrowBadge>
-          <h2 className="mt-4 text-3xl sm:text-5xl font-semibold tracking-tighter text-white max-w-2xl leading-tight">
+          <h2 className="mt-3 sm:mt-4 text-2xl sm:text-5xl font-semibold tracking-tighter text-white max-w-2xl leading-tight">
             Engineered for Feeds. <br />
             <span className="text-zinc-400 font-normal">Crafted for Cult Followings.</span>
           </h2>
         </div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
           {CAPABILITIES.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div
                 key={idx}
-                className={`card-surface p-7 flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1 ${item.colSpan}`}
+                className={`card-surface p-5 sm:p-7 flex flex-col justify-between transition-transform duration-300 hover:-translate-y-1 ${item.colSpan}`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="text-[10px] font-mono font-medium tracking-wider text-zinc-400">
+                  <div className="flex items-center justify-between mb-4 sm:mb-5">
+                    <span className="text-[9px] sm:text-[10px] font-mono font-medium tracking-wider text-zinc-400">
                       {item.category}
                     </span>
-                    <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white">
-                      <Icon size={14} weight="bold" />
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 flex items-center justify-center text-white">
+                      <Icon size={13} weight="bold" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-white tracking-tight mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-white tracking-tight mb-2">
                     {item.title}
                   </h3>
                   <p className="text-xs leading-relaxed text-zinc-400">
@@ -78,7 +78,7 @@ export function BentoFeatures() {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-zinc-500 font-mono">
+                <div className="mt-5 sm:mt-6 pt-3 border-t border-white/10 flex items-center justify-between text-[9px] sm:text-[10px] text-zinc-500 font-mono">
                   <span>AGENCY SERVICE 0{idx + 1}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-white" />
                 </div>
