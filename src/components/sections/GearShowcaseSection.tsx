@@ -203,16 +203,16 @@ export function GearShowcaseSection() {
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover opacity-90" />
 
-        {/* Section Intro Overlay with Frosted Glass Plate */}
+        {/* Section Intro Overlay with Frosted Glass Container & Blur Outline */}
         <div
           ref={introTextRef}
-          className="absolute top-16 sm:top-20 inset-x-4 md:inset-x-0 flex flex-col items-center text-center pointer-events-none z-20"
+          className="absolute top-16 sm:top-20 inset-x-4 flex flex-col items-center text-center pointer-events-none z-20"
         >
-          <div className="glass-card-hero pointer-events-auto px-6 py-6 md:px-10 md:py-8 rounded-3xl flex flex-col items-center max-w-3xl mx-auto">
+          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-3xl p-6 sm:p-8 rounded-[2.5rem] bg-black/60 backdrop-blur-2xl border border-white/20 shadow-[0_25px_70px_rgba(0,0,0,0.85)] pointer-events-auto">
             <EyebrowBadge>CREATIVE STUDIO & CAMPAIGN ENGINE</EyebrowBadge>
-            <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-2xl">
+            <h2 className="font-serif italic text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-2xl">
               Cinematic Short-Form & <br />
-              <span className="text-zinc-200 font-serif italic font-medium drop-shadow-md">Full-Scale Client Campaigns</span>
+              <span className="text-zinc-200 font-serif italic font-medium">Full-Scale Client Campaigns</span>
             </h2>
           </div>
         </div>
@@ -230,7 +230,7 @@ export function GearShowcaseSection() {
                   : "opacity-0 translate-y-4 scale-95 pointer-events-none"
               }`}
             >
-              <div className="card-surface p-4 sm:p-6 shadow-2xl border-white/15">
+              <div className="card-surface p-4 sm:p-6 shadow-2xl border-white/20">
                 <div className="flex items-center justify-between mb-2.5 sm:mb-3">
                   <span className="text-[9px] sm:text-[10px] font-mono font-semibold text-zinc-300 tracking-wider">
                     {spec.badge}
