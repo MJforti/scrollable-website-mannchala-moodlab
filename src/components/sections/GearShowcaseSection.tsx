@@ -203,16 +203,18 @@ export function GearShowcaseSection() {
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover opacity-90" />
 
-        {/* Section Intro Overlay */}
+        {/* Section Intro Overlay with Frosted Glass Plate */}
         <div
           ref={introTextRef}
-          className="absolute top-20 sm:top-24 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
+          className="absolute top-16 sm:top-20 inset-x-4 md:inset-x-0 flex flex-col items-center text-center pointer-events-none z-20"
         >
-          <EyebrowBadge>CREATIVE STUDIO & CAMPAIGN ENGINE</EyebrowBadge>
-          <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-3xl leading-tight drop-shadow-xl">
-            Cinematic Short-Form & <br />
-            <span className="text-zinc-200 font-serif italic font-medium drop-shadow-md">Full-Scale Client Campaigns</span>
-          </h2>
+          <div className="glass-card-hero pointer-events-auto px-6 py-6 md:px-10 md:py-8 rounded-3xl flex flex-col items-center max-w-3xl mx-auto">
+            <EyebrowBadge>CREATIVE STUDIO & CAMPAIGN ENGINE</EyebrowBadge>
+            <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-2xl">
+              Cinematic Short-Form & <br />
+              <span className="text-zinc-200 font-serif italic font-medium drop-shadow-md">Full-Scale Client Campaigns</span>
+            </h2>
+          </div>
         </div>
 
         {/* Minimalist Spec Cards */}

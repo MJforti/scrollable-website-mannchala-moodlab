@@ -205,14 +205,14 @@ export function HeroSection() {
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover" />
 
-        {/* Hero Overlay Text - High Visibility Bold Italic Serif */}
+        {/* Hero Overlay Text with Glass Blur Plate */}
         <div
           ref={heroTextRef}
-          className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-20 px-4 md:py-28 md:px-6 text-center z-20 transition-opacity duration-300 ease-out"
+          className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-16 px-4 md:py-24 md:px-6 text-center z-20 transition-opacity duration-300 ease-out"
         >
-          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-4xl">
+          <div className="glass-card-hero pointer-events-auto px-6 py-8 md:px-12 md:py-10 rounded-3xl flex flex-col items-center gap-3 sm:gap-4 max-w-4xl mx-auto">
             <EyebrowBadge>CREATIVE & SOCIAL MEDIA AGENCY</EyebrowBadge>
-            <h1 className="font-serif italic font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-[1.05] drop-shadow-xl">
+            <h1 className="font-serif italic font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-[1.05] drop-shadow-2xl">
               Viral Social Content & <br />
               <span className="text-zinc-200 font-serif italic font-medium drop-shadow-md">
                 Creative Brand Architecture
@@ -220,7 +220,7 @@ export function HeroSection() {
             </h1>
           </div>
 
-          <div className="flex flex-col items-center gap-1 font-mono text-[9px] sm:text-[10px] text-zinc-400 font-medium uppercase tracking-widest bg-black/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
+          <div className="flex flex-col items-center gap-1 font-mono text-[9px] sm:text-[10px] text-zinc-300 font-medium uppercase tracking-widest bg-black/50 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/15 shadow-lg">
             <span>Scroll to Explore Creative Lab</span>
             <CaretDown size={12} className="animate-bounce text-white" />
           </div>
