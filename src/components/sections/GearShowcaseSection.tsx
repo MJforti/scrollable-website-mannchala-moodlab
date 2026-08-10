@@ -203,16 +203,16 @@ export function GearShowcaseSection() {
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover opacity-90" />
 
-        {/* Section Intro Overlay - Tight Frosted Glass Blur ON TEXT ONLY */}
+        {/* Section Intro Overlay with Frosted Glass Text Blur Effect */}
         <div
           ref={introTextRef}
           className="absolute top-16 sm:top-20 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
         >
-          <div className="flex flex-col items-center p-5 sm:p-7 rounded-3xl backdrop-blur-xl bg-black/45 border border-white/12 shadow-2xl max-w-3xl">
+          <div className="flex flex-col items-center p-6 sm:p-8 md:p-10 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl pointer-events-auto max-w-3xl">
             <EyebrowBadge>CREATIVE STUDIO & CAMPAIGN ENGINE</EyebrowBadge>
-            <h2 className="font-serif italic mt-3 sm:mt-4 text-2xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-2xl">
+            <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-2xl">
               Cinematic Short-Form & <br />
-              <span className="text-zinc-200 font-serif italic font-medium">Full-Scale Client Campaigns</span>
+              <span className="text-zinc-200 font-serif italic font-medium drop-shadow-xl">Full-Scale Client Campaigns</span>
             </h2>
           </div>
         </div>
