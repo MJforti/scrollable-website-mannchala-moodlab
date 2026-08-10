@@ -203,21 +203,16 @@ export function GearShowcaseSection() {
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover opacity-90" />
 
-        {/* Section Intro Overlay with Tight Inline Glass Pills */}
+        {/* Section Intro Overlay - Tight Frosted Glass Blur ON TEXT ONLY */}
         <div
           ref={introTextRef}
-          className="absolute top-16 sm:top-20 inset-x-4 flex flex-col items-center text-center pointer-events-none z-20"
+          className="absolute top-16 sm:top-20 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
         >
-          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-4xl pointer-events-auto">
+          <div className="flex flex-col items-center p-5 sm:p-7 rounded-3xl backdrop-blur-xl bg-black/45 border border-white/12 shadow-2xl max-w-3xl">
             <EyebrowBadge>CREATIVE STUDIO & CAMPAIGN ENGINE</EyebrowBadge>
-            <h2 className="font-serif italic text-2xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.25]">
-              <span className="inline-block bg-black/65 backdrop-blur-2xl px-5 py-2 sm:px-7 sm:py-2.5 rounded-2xl border border-white/25 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-white my-1">
-                Cinematic Short-Form &
-              </span>
-              <br />
-              <span className="inline-block bg-black/65 backdrop-blur-2xl px-5 py-2 sm:px-7 sm:py-2.5 rounded-2xl border border-white/25 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-zinc-200 font-serif italic font-medium my-1">
-                Full-Scale Client Campaigns
-              </span>
+            <h2 className="font-serif italic mt-3 sm:mt-4 text-2xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-tight drop-shadow-2xl">
+              Cinematic Short-Form & <br />
+              <span className="text-zinc-200 font-serif italic font-medium">Full-Scale Client Campaigns</span>
             </h2>
           </div>
         </div>
@@ -235,7 +230,7 @@ export function GearShowcaseSection() {
                   : "opacity-0 translate-y-4 scale-95 pointer-events-none"
               }`}
             >
-              <div className="card-surface p-4 sm:p-6 shadow-2xl border-white/20">
+              <div className="card-surface p-4 sm:p-6 shadow-2xl border-white/15">
                 <div className="flex items-center justify-between mb-2.5 sm:mb-3">
                   <span className="text-[9px] sm:text-[10px] font-mono font-semibold text-zinc-300 tracking-wider">
                     {spec.badge}

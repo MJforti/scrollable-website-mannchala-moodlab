@@ -205,26 +205,23 @@ export function HeroSection() {
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
         <canvas ref={canvasRef} className="block h-full w-full object-cover" />
 
-        {/* Hero Overlay Text with Tight Inline Glass Pills */}
+        {/* Hero Overlay Text - Tight Frosted Glass Backdrop Blur ON TEXT ONLY */}
         <div
           ref={heroTextRef}
           className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-16 px-4 md:py-24 md:px-6 text-center z-20 transition-opacity duration-300 ease-out"
         >
-          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-5xl pointer-events-auto">
+          {/* Frosted text backdrop pill container */}
+          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-4xl p-5 sm:p-8 rounded-3xl backdrop-blur-xl bg-black/45 border border-white/12 shadow-2xl">
             <EyebrowBadge>CREATIVE & SOCIAL MEDIA AGENCY</EyebrowBadge>
-            
-            <h1 className="font-serif italic font-bold text-3xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[1.25] text-center">
-              <span className="inline-block bg-black/65 backdrop-blur-2xl px-5 py-2 sm:px-8 sm:py-3 rounded-2xl border border-white/25 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-white my-1">
-                Viral Social Content &
-              </span>
-              <br />
-              <span className="inline-block bg-black/65 backdrop-blur-2xl px-5 py-2 sm:px-8 sm:py-3 rounded-2xl border border-white/25 shadow-[0_15px_50px_rgba(0,0,0,0.9)] text-zinc-200 font-serif italic font-medium my-1">
+            <h1 className="font-serif italic font-bold text-3xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-[1.08] drop-shadow-2xl">
+              Viral Social Content & <br />
+              <span className="text-zinc-200 font-serif italic font-medium">
                 Creative Brand Architecture
               </span>
             </h1>
           </div>
 
-          <div className="flex flex-col items-center gap-1 font-mono text-[9px] sm:text-[10px] text-zinc-300 font-medium uppercase tracking-widest bg-black/70 backdrop-blur-xl px-4 py-1.5 rounded-full border border-white/20 shadow-lg pointer-events-auto">
+          <div className="flex flex-col items-center gap-1 font-mono text-[9px] sm:text-[10px] text-zinc-300 font-medium uppercase tracking-widest bg-black/50 backdrop-blur-xl px-4 py-1.5 rounded-full border border-white/15 shadow-lg">
             <span>Scroll to Explore Creative Lab</span>
             <CaretDown size={12} className="animate-bounce text-white" />
           </div>
@@ -243,7 +240,7 @@ export function HeroSection() {
                   : "opacity-0 translate-y-4 scale-95 pointer-events-none"
               }`}
             >
-              <div className="card-surface p-4 sm:p-6 shadow-2xl border-white/20">
+              <div className="card-surface p-4 sm:p-6 shadow-2xl border-white/15">
                 <div className="flex items-center justify-between mb-2.5 sm:mb-3">
                   <span className="text-[9px] sm:text-[10px] font-mono font-semibold text-zinc-300 tracking-wider">
                     {card.badge}
