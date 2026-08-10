@@ -46,9 +46,9 @@ export function BentoFeatures() {
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-10 md:mb-14">
           <EyebrowBadge>SOCIAL MEDIA AGENCY SERVICES</EyebrowBadge>
-          <h2 className="mt-3 sm:mt-4 text-2xl sm:text-5xl font-semibold tracking-tighter text-white max-w-2xl leading-tight">
+          <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white max-w-3xl leading-tight">
             Engineered for Feeds. <br />
-            <span className="text-zinc-400 font-normal">Crafted for Cult Followings.</span>
+            <span className="text-zinc-300 font-serif italic">Crafted for Cult Followings.</span>
           </h2>
         </div>
 

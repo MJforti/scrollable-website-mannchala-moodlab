@@ -211,11 +211,11 @@ export function HeroSection() {
           ref={heroTextRef}
           className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-20 px-4 md:py-28 md:px-6 text-center z-20 transition-opacity duration-300 ease-out"
         >
-          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-3xl">
+          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-4xl">
             <EyebrowBadge>3D SOCIAL MEDIA & CONTENT AGENCY</EyebrowBadge>
-            <h1 className="text-3xl sm:text-6xl md:text-7xl font-semibold tracking-tighter text-white leading-[1.08] sm:leading-[1.05]">
+            <h1 className="font-serif italic font-semibold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-[1.05]">
               Viral 3D Content & <br />
-              <span className="text-zinc-400 font-normal">
+              <span className="text-zinc-300 font-serif italic">
                 Social Motion Engineering
               </span>
             </h1>

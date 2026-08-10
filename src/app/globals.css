@@ -1,49 +1,74 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans-family);
-  --font-mono: var(--font-mono-family);
+@layer base {
+  :root {
+    --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
 }
 
-:root {
-  --background: #09090b;
-  --foreground: #ffffff;
-  --muted: #a1a1aa;
-  --card-bg: rgba(18, 18, 20, 0.7);
-  --font-sans-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif;
-  --font-mono-family: "JetBrains Mono", "SF Mono", monospace;
+.font-serif {
+  font-family: var(--font-serif);
 }
 
-html,
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans-family);
-  overflow-x: clip;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.font-sans {
+  font-family: var(--font-sans);
 }
 
-/* Minimalist Card & Glass Tokens */
-.card-surface {
-  background: var(--card-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Custom Smooth Lenis Scroll Styles */
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
-.glass-nav {
-  background: rgba(18, 18, 20, 0.7);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
 }
 
-/* Hide scrollbars */
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Matte Glassmorphism */
+.glass-nav {
+  background: rgba(18, 18, 20, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.card-surface {
+  background: rgba(18, 18, 20, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.25rem;
+}
+
+html, body {
+  overflow-x: clip;
+  background-color: #09090b;
 }

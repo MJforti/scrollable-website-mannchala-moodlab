@@ -209,9 +209,9 @@ export function GearShowcaseSection() {
           className="absolute top-20 sm:top-24 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
         >
           <EyebrowBadge>SOCIAL MOTION & CONTENT ENGINE</EyebrowBadge>
-          <h2 className="mt-3 sm:mt-4 text-2xl sm:text-5xl font-semibold tracking-tighter text-white max-w-2xl leading-tight">
+          <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white max-w-3xl leading-tight">
             Cinematic 3D Reels & <br />
-            <span className="text-zinc-400 font-normal">Social Motion Production</span>
+            <span className="text-zinc-300 font-serif italic">Social Motion Production</span>
           </h2>
         </div>
 
