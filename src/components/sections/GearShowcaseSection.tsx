@@ -11,9 +11,9 @@ const TECH_SPECS = [
     id: "gear-spec-1",
     show: 0.12,
     hide: 0.36,
-    badge: "01 / 3D SHORT-FORM",
-    title: "High-Octane 3D Motion",
-    description: "Multi-layered raytraced assets, liquid dynamics, and custom lighting designed specifically for vertical social feeds.",
+    badge: "01 / SHORT-FORM REELS",
+    title: "High-Retention Motion Video",
+    description: "Cinematic short-form video production, motion graphics, and dynamic editing designed specifically for vertical feeds.",
     icon: FilmStrip,
     position: "top-28 inset-x-4 max-w-[calc(100vw-2rem)] md:top-1/4 md:left-16 md:right-auto md:max-w-sm",
   },
@@ -21,9 +21,9 @@ const TECH_SPECS = [
     id: "gear-spec-2",
     show: 0.40,
     hide: 0.65,
-    badge: "02 / VIRTUAL CREATORS",
-    title: "3D Mascots & Avatars",
-    description: "Designing stylized 3D brand mascots and virtual creators that host campaigns and boost engagement.",
+    badge: "02 / TALENT & INFLUENCER LAB",
+    title: "Creator Network Operations",
+    description: "Pairing visionary brands with top digital creators for authentic, high-converting influencer campaigns.",
     icon: UserCircle,
     position: "top-32 inset-x-4 max-w-[calc(100vw-2rem)] md:top-1/3 md:right-16 md:left-auto md:max-w-sm",
   },
@@ -31,9 +31,9 @@ const TECH_SPECS = [
     id: "gear-spec-3",
     show: 0.70,
     hide: 0.92,
-    badge: "03 / CROSS-PLATFORM",
-    title: "Omnichannel Social Kits",
-    description: "Lossless frame-sequence rendering optimized for seamless playback across Instagram, TikTok, YouTube Shorts, and Web.",
+    badge: "03 / OMNICHANNEL PRODUCTION",
+    title: "Full-Suite Digital Campaigns",
+    description: "Multi-platform video assets and campaign content optimized for seamless playback across Instagram, TikTok, YouTube, and Web.",
     icon: Devices,
     position: "bottom-20 inset-x-4 max-w-[calc(100vw-2rem)] md:bottom-1/4 md:left-24 md:right-auto md:max-w-sm",
   },
@@ -208,10 +208,10 @@ export function GearShowcaseSection() {
           ref={introTextRef}
           className="absolute top-20 sm:top-24 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
         >
-          <EyebrowBadge>SOCIAL MOTION & CONTENT ENGINE</EyebrowBadge>
-          <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-semibold tracking-tight text-white max-w-3xl leading-tight">
-            Cinematic 3D Reels & <br />
-            <span className="text-zinc-300 font-serif italic">Social Motion Production</span>
+          <EyebrowBadge>CREATIVE STUDIO & CAMPAIGN ENGINE</EyebrowBadge>
+          <h2 className="font-serif italic mt-3 sm:mt-4 text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-3xl leading-tight drop-shadow-xl">
+            Cinematic Short-Form & <br />
+            <span className="text-zinc-200 font-serif italic font-medium drop-shadow-md">Full-Scale Client Campaigns</span>
           </h2>
         </div>
 
@@ -228,19 +228,19 @@ export function GearShowcaseSection() {
                   : "opacity-0 translate-y-4 scale-95 pointer-events-none"
               }`}
             >
-              <div className="card-surface p-4 sm:p-6">
+              <div className="card-surface p-4 sm:p-6 shadow-2xl border-white/15">
                 <div className="flex items-center justify-between mb-2.5 sm:mb-3">
-                  <span className="text-[9px] sm:text-[10px] font-mono font-medium text-zinc-400 tracking-wider">
+                  <span className="text-[9px] sm:text-[10px] font-mono font-semibold text-zinc-300 tracking-wider">
                     {spec.badge}
                   </span>
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/10 flex items-center justify-center text-white">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/15 flex items-center justify-center text-white">
                     <Icon size={12} weight="bold" />
                   </div>
                 </div>
-                <h3 className="text-sm sm:text-base font-semibold text-white tracking-tight mb-1">
+                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight mb-1">
                   {spec.title}
                 </h3>
-                <p className="text-[11px] sm:text-xs leading-relaxed text-zinc-400">
+                <p className="text-[11px] sm:text-xs leading-relaxed text-zinc-300 font-normal">
                   {spec.description}
                 </p>
               </div>
@@ -249,8 +249,8 @@ export function GearShowcaseSection() {
         })}
 
         {/* Minimal Bottom Indicator */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-500">
-          <span>02 / SOCIAL MOTION SUITE</span>
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-400 font-medium">
+          <span>02 / CREATIVE STUDIO SUITE</span>
           <span className="hidden sm:inline">MANNCHALA MOODLAB</span>
           <span>Scroll ↓</span>
         </div>

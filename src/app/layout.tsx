@@ -18,9 +18,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Mannchala Moodlab — 3D Social Media Agency",
+  title: "Mannchala Moodlab — Creative & Social Media Agency",
   description:
-    "Mannchala Moodlab is a next-generation 3D social media agency crafting viral short-form content, spatial social motion, 3D reels, and brand mythologies.",
+    "Mannchala Moodlab is a full-service creative and social media agency crafting viral content, brand strategy, influencer campaigns, and digital growth for leading brands.",
 };
 
 export default function RootLayout({
