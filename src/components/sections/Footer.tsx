@@ -14,12 +14,6 @@ export function Footer() {
         </div>
 
         <div className="flex items-center gap-6 sm:gap-8 text-xs text-zinc-300 font-semibold tracking-tight">
-          <a href="#hero" className="hover:text-white transition-colors">
-            Social Media
-          </a>
-          <a href="#gear" className="hover:text-white transition-colors">
-            Creative Studio
-          </a>
           <a href="#bento" className="hover:text-white transition-colors">
             Services
           </a>

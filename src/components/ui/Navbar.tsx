@@ -33,12 +33,6 @@ export function Navbar() {
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-8 text-xs font-semibold tracking-tight text-zinc-300">
-          <a href="#hero" className="transition-colors hover:text-white">
-            Social Media
-          </a>
-          <a href="#gear" className="transition-colors hover:text-white">
-            Creative Studio
-          </a>
           <a href="#bento" className="transition-colors hover:text-white">
             Services
           </a>
