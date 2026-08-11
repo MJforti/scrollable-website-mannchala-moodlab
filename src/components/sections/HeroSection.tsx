@@ -11,7 +11,7 @@ const ANNOTATIONS = [
     id: "card-1",
     show: 0.12,
     hide: 0.36,
-    badge: "01 / SOCIAL MEDIA MANAGEMENT",
+    badge: "01 / REELS & SHORT-FORM",
     title: "Viral Short-Form Content",
     description: "High-retention Reels, TikTok content, and short-form video production engineered to hook scrollers in 0.5 seconds.",
     icon: FilmStrip,
@@ -49,6 +49,7 @@ export function HeroSection() {
   const prevVisibleIdsRef = useRef("");
 
   const [visibleCards, setVisibleCards] = useState<string[]>([]);
+  const [scrollPercent, setScrollPercent] = useState(0);
 
   // Cover-fit Canvas Drawer
   const drawFrame = useCallback((index: number) => {
@@ -154,6 +155,8 @@ export function HeroSection() {
         const rawProgress = -rect.top / scrollableHeight;
         const progress = Math.min(1, Math.max(0, rawProgress));
 
+        setScrollPercent(Math.round(progress * 100));
+
         const frameIndex = Math.min(
           FRAME_COUNT - 1,
           Math.floor(progress * FRAME_COUNT)
@@ -210,9 +213,9 @@ export function HeroSection() {
           ref={heroTextRef}
           className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-16 px-4 md:py-24 md:px-6 text-center z-20 transition-opacity duration-300 ease-out"
         >
-          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-4xl p-6 sm:p-7 md:p-8 rounded-3xl apple-text-glass pointer-events-auto">
+          <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-4xl p-6 sm:p-7 md:p-8 rounded-3xl apple-text-glass pointer-events-auto border border-white/15">
             <EyebrowBadge>CREATIVE & SOCIAL MEDIA AGENCY</EyebrowBadge>
-            <h1 className="font-serif italic font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-[1.05] drop-shadow-lg">
+            <h1 className="font-serif italic font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white leading-[1.05] drop-shadow-xl">
               Viral Social Content & <br />
               <span className="text-zinc-200 font-serif italic font-medium drop-shadow-md">
                 Creative Brand Architecture
@@ -220,9 +223,9 @@ export function HeroSection() {
             </h1>
           </div>
 
-          <div className="flex flex-col items-center gap-1 font-mono text-[9px] sm:text-[10px] text-zinc-300 font-medium uppercase tracking-widest apple-text-glass px-4 py-1.5 rounded-full">
+          <div className="flex flex-col items-center gap-1.5 font-mono text-[9px] sm:text-[10px] text-zinc-300 font-medium uppercase tracking-widest apple-text-glass px-4 py-1.5 rounded-full border border-white/15">
             <span>Scroll to Explore Creative Lab</span>
-            <CaretDown size={12} className="animate-bounce text-white" />
+            <CaretDown size={13} className="animate-bounce text-white" />
           </div>
         </div>
 
@@ -235,17 +238,17 @@ export function HeroSection() {
               key={card.id}
               className={`absolute ${card.position} pointer-events-auto transition-all duration-500 ease-out z-30 ${
                 isVisible
-                  ? "opacity-100 translate-y-0 scale-100"
+                  ? "opacity-100 translate-y-0 scale-100 shadow-2xl"
                   : "opacity-0 translate-y-4 scale-95 pointer-events-none"
               }`}
             >
-              <div className="card-surface p-4 sm:p-6">
+              <div className="card-surface p-4 sm:p-6 border border-white/20">
                 <div className="flex items-center justify-between mb-2.5 sm:mb-3">
-                  <span className="text-[9px] sm:text-[10px] font-mono font-semibold text-zinc-300 tracking-wider">
+                  <span className="text-[9px] sm:text-[10px] font-mono font-bold text-zinc-300 tracking-wider">
                     {card.badge}
                   </span>
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/15 flex items-center justify-center text-white">
-                    <Icon size={12} weight="bold" />
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 flex items-center justify-center text-white border border-white/10 shadow-inner">
+                    <Icon size={13} weight="bold" />
                   </div>
                 </div>
                 <h3 className="text-sm sm:text-base font-bold text-white tracking-tight mb-1">
@@ -259,11 +262,19 @@ export function HeroSection() {
           );
         })}
 
-        {/* Minimal Bottom Indicator */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-400 font-medium">
-          <span>01 / CREATIVE AGENCY HERO</span>
-          <span className="hidden sm:inline">MANNCHALA MOODLAB</span>
-          <span>Scroll ↓</span>
+        {/* Bottom Sequence Progress & Status Indicator */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex flex-col gap-2">
+          <div className="w-full bg-white/10 h-0.5 rounded-full overflow-hidden">
+            <div
+              className="bg-white h-full transition-all duration-150 ease-out"
+              style={{ width: `${scrollPercent}%` }}
+            />
+          </div>
+          <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-400 font-semibold">
+            <span>01 / CREATIVE AGENCY HERO</span>
+            <span className="hidden sm:inline">MANNCHALA MOODLAB</span>
+            <span>SEQUENCE {scrollPercent}%</span>
+          </div>
         </div>
       </div>
     </section>
