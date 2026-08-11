@@ -32,7 +32,6 @@ next-env.d.ts
 .idea/
 .vscode/
 
-# Skill pack temp files
+# Skill packs
 3d-scroll-website-skill-pack*
-
-.vercel
+skills-use-these/

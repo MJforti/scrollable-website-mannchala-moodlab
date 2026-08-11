@@ -1,6 +1,7 @@
 "use client";
 
 import { EyebrowBadge } from "../ui/EyebrowBadge";
+import { NeumorphicCircuit } from "../ui/NeumorphicCircuit";
 import {
   FilmStrip,
   Sparkle,
@@ -52,7 +53,7 @@ export function BentoFeatures() {
 
       <div className="mx-auto max-w-[1200px] relative z-10">
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
           <EyebrowBadge>CREATIVE & SOCIAL MEDIA SERVICES</EyebrowBadge>
           <h2 className="font-serif italic mt-4 text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white max-w-3xl leading-tight drop-shadow-xl">
             Engineered for Feeds. <br />
@@ -61,6 +62,8 @@ export function BentoFeatures() {
           <p className="mt-4 text-xs sm:text-sm text-zinc-400 max-w-xl font-sans font-normal leading-relaxed">
             Full-service creative production, creator ops, and social media growth strategies tailored for ambitious brands.
           </p>
+
+          <NeumorphicCircuit />
         </div>
 
         {/* Bento Grid */}
