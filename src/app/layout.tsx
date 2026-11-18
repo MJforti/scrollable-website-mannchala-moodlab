@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
@@ -21,6 +21,17 @@ export const metadata: Metadata = {
   title: "Mannchala Moodlab — Creative & Social Media Agency",
   description:
     "Mannchala Moodlab is a full-service creative and social media agency crafting viral content, brand strategy, influencer campaigns, and digital growth for leading brands.",
+  openGraph: {
+    title: "Mannchala Moodlab — Creative & Social Media Agency",
+    description: "Viral social content and creative brand architecture.",
+    type: "website",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#09090b",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
