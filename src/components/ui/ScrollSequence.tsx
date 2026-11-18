@@ -239,11 +239,15 @@ export function ScrollSequence({
           );
         })}
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex flex-col gap-2">
-          <div className="w-full bg-white/10 h-0.5 rounded-full overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-28 sm:h-32 z-10 bg-gradient-to-t from-black/75 via-black/40 to-transparent"
+        />
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex flex-col gap-2 [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]">
+          <div className="w-full bg-white/20 h-0.5 rounded-full overflow-hidden">
             <div ref={barRef} className="bg-white h-full w-full origin-left" style={{ transform: "scaleX(0)" }} />
           </div>
-          <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-400 font-semibold">
+          <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-100 font-semibold">
             <span>{label}</span>
             <span className="hidden sm:inline">
               {loading ? `LOADING ${Math.round((loaded / frameCount) * 100)}%` : "MANNCHALA MOODLAB"}
