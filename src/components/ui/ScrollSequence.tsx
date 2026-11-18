@@ -28,6 +28,10 @@ type Props = {
 };
 
 const BG = "#09090b";
+/** Letterbox on phones whose viewport is narrower than this aspect ratio. */
+const LETTERBOX_BELOW_ASPECT = 0.8;
+/** Fraction of the frame's width shown in the phone letterbox. */
+const LETTERBOX_VISIBLE = 0.72;
 
 /**
  * Scroll-scrubbed image sequence. Techniques adapted from the scroll-world
@@ -75,6 +79,15 @@ export function ScrollSequence({
     let lastCardKey = "";
     let loadedCount = 0;
 
+    // Tiny offscreen canvas used to fake a blur for the phone letterbox backdrop.
+    const blur = document.createElement("canvas");
+    blur.width = 32;
+    blur.height = 18;
+    const bctx = blur.getContext("2d")!;
+    // Reused offscreen canvas for the feathered letterbox frame.
+    const feather = document.createElement("canvas");
+    const fctx = feather.getContext("2d")!;
+
     const draw = (want: number) => {
       // Fall back to the nearest frame that has finished loading.
       let idx = -1;
@@ -86,11 +99,48 @@ export function ScrollSequence({
       const img = frames[idx]!;
       const cw = canvas.width, ch = canvas.height;
       const ir = img.naturalWidth / img.naturalHeight;
+      // Cover-fit size.
       let w = cw, h = cw / ir;
       if (h < ch) { h = ch; w = ch * ir; }
       ctx.fillStyle = BG;
       ctx.fillRect(0, 0, cw, ch);
-      ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+
+      if (cw / ch < LETTERBOX_BELOW_ASPECT && window.innerWidth <= 768) {
+        // Portrait phone: cover-fit would crop most of a landscape frame.
+        // Paint a blurred, dimmed cover copy as the backdrop (downscale then
+        // upscale; works without ctx.filter, which older Safari lacks), then
+        // the frame itself showing LETTERBOX_VISIBLE of its width.
+        const bw = blur.width, bh = blur.height;
+        bctx.drawImage(img, 0, 0, bw, bh);
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(blur, (cw - w) / 2, (ch - h) / 2, w, h);
+        ctx.fillStyle = "rgba(9,9,11,0.55)";
+        ctx.fillRect(0, 0, cw, ch);
+
+        const fw = cw / LETTERBOX_VISIBLE, fh = fw / ir;
+        // Feather the top and bottom edges into the backdrop with an alpha mask.
+        const fy = (ch - fh) / 2;
+        const fh2 = Math.round(fh);
+        if (feather.width !== cw || feather.height !== fh2) {
+          feather.width = cw;
+          feather.height = fh2;
+        }
+        fctx.globalCompositeOperation = "source-over";
+        fctx.clearRect(0, 0, cw, fh2);
+        fctx.drawImage(img, (cw - fw) / 2, 0, fw, fh2);
+        const edge = 0.16;
+        const g = fctx.createLinearGradient(0, 0, 0, fh2);
+        g.addColorStop(0, "rgba(0,0,0,0)");
+        g.addColorStop(edge, "rgba(0,0,0,1)");
+        g.addColorStop(1 - edge, "rgba(0,0,0,1)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        fctx.globalCompositeOperation = "destination-in";
+        fctx.fillStyle = g;
+        fctx.fillRect(0, 0, cw, fh2);
+        ctx.drawImage(feather, 0, fy);
+      } else {
+        ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+      }
       drawn = idx;
     };
 
