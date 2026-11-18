@@ -32,6 +32,12 @@ const BG = "#09090b";
 const LETTERBOX_BELOW_ASPECT = 0.8;
 /** Fraction of the frame's width shown in the phone letterbox. */
 const LETTERBOX_VISIBLE = 0.72;
+/** Cross-blend granularity between neighbouring frames. */
+const BLEND_STEPS = 16;
+/** Above this average frame time (ms) while scrubbing, blending is turned off. */
+const MAX_BLEND_FRAME_MS = 24;
+/** Opacity steps used to feather the letterbox edges. */
+const FEATHER_BANDS = 10;
 
 /**
  * Scroll-scrubbed image sequence. Techniques adapted from the scroll-world
@@ -78,30 +84,49 @@ export function ScrollSequence({
     let visible = false;
     let lastCardKey = "";
     let loadedCount = 0;
+    let blendSteps = BLEND_STEPS;
+    let frameTime = 16.7; // moving average of rAF interval while animating, ms
+    let frameSamples = 0;
+    let lastTick = 0;
 
     // Tiny offscreen canvas used to fake a blur for the phone letterbox backdrop.
     const blur = document.createElement("canvas");
     blur.width = 32;
     blur.height = 18;
     const bctx = blur.getContext("2d")!;
-    // Reused offscreen canvas for the feathered letterbox frame.
-    const feather = document.createElement("canvas");
-    const fctx = feather.getContext("2d")!;
 
-    const draw = (want: number) => {
-      // Fall back to the nearest frame that has finished loading.
-      let idx = -1;
+    const nearestReady = (want: number) => {
       for (let d = 0; d < frameCount; d++) {
-        if (want - d >= 0 && ready[want - d]) { idx = want - d; break; }
-        if (want + d < frameCount && ready[want + d]) { idx = want + d; break; }
+        if (want - d >= 0 && ready[want - d]) return want - d;
+        if (want + d < frameCount && ready[want + d]) return want + d;
       }
-      if (idx < 0 || idx === drawn) return;
-      const img = frames[idx]!;
+      return -1;
+    };
+
+    // Draws the playhead at a fractional frame position. Consecutive frames are
+    // cross-blended by the fractional part, so 120 frames read as continuous
+    // motion instead of visible steps.
+    const draw = (pos: number) => {
+      const base = Math.floor(pos);
+      const a = nearestReady(base);
+      if (a < 0) return;
+      let t = a === base ? pos - base : 0;
+      const b = a + 1 < frameCount && ready[a + 1] ? a + 1 : -1;
+      if (b < 0) t = 0;
+      t = Math.round(t * blendSteps) / blendSteps;
+      let first = a;
+      if (t === 1) { first = b; t = 0; } // rounded up: just show the next frame
+      const key = first + t;
+      if (key === drawn) return;
+
+      const imgA = frames[first]!;
+      const imgB = b >= 0 && t > 0 ? frames[b]! : null;
       const cw = canvas.width, ch = canvas.height;
-      const ir = img.naturalWidth / img.naturalHeight;
+      const ir = imgA.naturalWidth / imgA.naturalHeight;
       // Cover-fit size.
       let w = cw, h = cw / ir;
       if (h < ch) { h = ch; w = ch * ir; }
+      ctx.globalAlpha = 1;
       ctx.fillStyle = BG;
       ctx.fillRect(0, 0, cw, ch);
 
@@ -110,46 +135,61 @@ export function ScrollSequence({
         // Paint a blurred, dimmed cover copy as the backdrop (downscale then
         // upscale; works without ctx.filter, which older Safari lacks), then
         // the frame itself showing LETTERBOX_VISIBLE of its width.
+        // The dim is baked into the tiny blur canvas, so the backdrop and the
+        // edge bands below are each a single cheap upscale of a 32x18 source.
         const bw = blur.width, bh = blur.height;
-        bctx.drawImage(img, 0, 0, bw, bh);
+        bctx.globalAlpha = 1;
+        bctx.drawImage(imgA, 0, 0, bw, bh);
+        bctx.fillStyle = "rgba(9,9,11,0.55)";
+        bctx.fillRect(0, 0, bw, bh);
+        const bx = (cw - w) / 2, by = (ch - h) / 2;
         ctx.imageSmoothingEnabled = true;
-        ctx.drawImage(blur, (cw - w) / 2, (ch - h) / 2, w, h);
-        ctx.fillStyle = "rgba(9,9,11,0.55)";
-        ctx.fillRect(0, 0, cw, ch);
+        ctx.drawImage(blur, bx, by, w, h);
 
-        const fw = cw / LETTERBOX_VISIBLE, fh = fw / ir;
-        // Feather the top and bottom edges into the backdrop with an alpha mask.
-        const fy = (ch - fh) / 2;
-        const fh2 = Math.round(fh);
-        if (feather.width !== cw || feather.height !== fh2) {
-          feather.width = cw;
-          feather.height = fh2;
+        const fw = cw / LETTERBOX_VISIBLE;
+        const fh = fw / ir;
+        const fx = (cw - fw) / 2, fy = Math.round((ch - fh) / 2);
+        ctx.drawImage(imgA, fx, fy, fw, fh);
+        if (imgB) {
+          ctx.globalAlpha = t;
+          ctx.drawImage(imgB, fx, fy, fw, fh);
         }
-        fctx.globalCompositeOperation = "source-over";
-        fctx.clearRect(0, 0, cw, fh2);
-        fctx.drawImage(img, (cw - fw) / 2, 0, fw, fh2);
-        const edge = 0.16;
-        const g = fctx.createLinearGradient(0, 0, 0, fh2);
-        g.addColorStop(0, "rgba(0,0,0,0)");
-        g.addColorStop(edge, "rgba(0,0,0,1)");
-        g.addColorStop(1 - edge, "rgba(0,0,0,1)");
-        g.addColorStop(1, "rgba(0,0,0,0)");
-        fctx.globalCompositeOperation = "destination-in";
-        fctx.fillStyle = g;
-        fctx.fillRect(0, 0, cw, fh2);
-        ctx.drawImage(feather, 0, fy);
+
+        // Feather the frame's top and bottom edges: repaint the backdrop over
+        // thin bands with decreasing opacity (no per-frame offscreen masking).
+        const fade = fh * 0.16;
+        const band = fade / FEATHER_BANDS;
+        const sy = bh / h; // dest -> blur-source scale
+        // Bands are snapped to whole pixels and abut exactly, so no seams show.
+        for (let k = 0; k < FEATHER_BANDS; k++) {
+          ctx.globalAlpha = 1 - (k + 0.5) / FEATHER_BANDS;
+          const topA = Math.round(fy + k * band), topB = Math.round(fy + (k + 1) * band);
+          const botA = Math.round(fy + fh - (k + 1) * band), botB = Math.round(fy + fh - k * band);
+          for (const [y0, y1] of [[topA, topB], [botA, botB]]) {
+            if (y1 > y0) ctx.drawImage(blur, 0, (y0 - by) * sy, bw, (y1 - y0) * sy, 0, y0, cw, y1 - y0);
+          }
+        }
+        ctx.globalAlpha = 1;
       } else {
-        ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+        ctx.drawImage(imgA, (cw - w) / 2, (ch - h) / 2, w, h);
+        if (imgB) {
+          ctx.globalAlpha = t;
+          ctx.drawImage(imgB, (cw - w) / 2, (ch - h) / 2, w, h);
+          ctx.globalAlpha = 1;
+        }
       }
-      drawn = idx;
+      drawn = key;
     };
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Phones get a lower backing-store ratio: far less to paint per frame,
+      // and the difference is invisible on photographic frames.
+      const cap = window.innerWidth <= 768 ? 1.5 : 2;
+      const dpr = Math.min(window.devicePixelRatio || 1, cap);
       canvas.width = Math.round(window.innerWidth * dpr);
       canvas.height = Math.round(window.innerHeight * dpr);
       drawn = -1;
-      draw(Math.round(cur));
+      draw(cur);
     };
 
     // Load order: first frame, then progressively finer strides, so any scroll
@@ -167,17 +207,25 @@ export function ScrollSequence({
         img.decoding = "async";
         img.onload = img.onerror = () => {
           if (disposed) return res();
-          if (img.naturalWidth) {
-            frames[i] = img;
-            ready[i] = true;
-            if (Math.abs(i - Math.round(cur)) < Math.abs(drawn - Math.round(cur)) || drawn < 0) {
-              drawn = -1;
-              draw(Math.round(cur));
+          const finish = () => {
+            if (disposed) return res();
+            if (img.naturalWidth) {
+              frames[i] = img;
+              ready[i] = true;
+              // Redraw if this frame is closer to the playhead than what's shown.
+              if (drawn < 0 || Math.abs(i - cur) < Math.abs(Math.floor(drawn) - cur) || i === Math.floor(cur) + 1) {
+                drawn = -1;
+                draw(cur);
+              }
             }
-          }
-          loadedCount++;
-          if (loadedCount % 6 === 0 || loadedCount === frameCount) setLoaded(loadedCount);
-          res();
+            loadedCount++;
+            if (loadedCount % 6 === 0 || loadedCount === frameCount) setLoaded(loadedCount);
+            res();
+          };
+          // Decode off the main thread before the frame is used, so the first
+          // draw of each frame during scroll doesn't stall on JPEG decoding.
+          if (img.naturalWidth && img.decode) img.decode().then(finish, finish);
+          else finish();
         };
         img.src = framePath(i + 1);
       });
@@ -210,14 +258,31 @@ export function ScrollSequence({
       if (key !== lastCardKey) { lastCardKey = key; setActiveCards(active); }
     };
 
-    const tick = () => {
+    const tick = (now: number) => {
       raf = 0;
+      // Adaptive quality: blending repaints the canvas (and any frosted glass
+      // over it) on nearly every frame. If the device can't keep up, fall back
+      // to whole frames, which repaint only when the frame index changes.
+      if (lastTick && blendSteps > 1) {
+        const dt = now - lastTick;
+        if (dt < 200) {
+          frameTime = frameTime * 0.9 + dt * 0.1;
+          if (++frameSamples > 30 && frameTime > MAX_BLEND_FRAME_MS) {
+            blendSteps = 1;
+            drawn = -1;
+          }
+        }
+      }
+      lastTick = now;
       update();
       if (reduce) return draw(0);
-      cur += (target - cur) * 0.18;
-      if (Math.abs(target - cur) < 0.05) cur = target;
-      draw(Math.round(cur));
+      // Light easing only: Lenis already smooths wheel input, so heavy easing
+      // here would just add lag.
+      cur += (target - cur) * 0.3;
+      if (Math.abs(target - cur) < 0.01) cur = target;
+      draw(cur);
       if (visible && cur !== target) raf = requestAnimationFrame(tick);
+      else lastTick = 0;
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
 
