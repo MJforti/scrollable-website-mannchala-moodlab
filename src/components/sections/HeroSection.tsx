@@ -51,7 +51,7 @@ export function HeroSection() {
       intro={(ref) => (
         <div
           ref={ref}
-          className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none py-16 px-4 md:py-24 md:px-6 text-center z-20"
+          className="absolute inset-0 flex flex-col items-center justify-between pointer-events-none pt-28 pb-16 px-4 md:py-24 md:px-6 text-center z-20"
         >
           <div className="flex flex-col items-center gap-3 sm:gap-4 max-w-4xl p-6 sm:p-7 md:p-8 rounded-3xl apple-text-glass pointer-events-auto border border-white/15">
             <EyebrowBadge>CREATIVE & SOCIAL MEDIA AGENCY</EyebrowBadge>

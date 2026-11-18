@@ -52,7 +52,7 @@ export function GearShowcaseSection() {
       intro={(ref) => (
         <div
           ref={ref}
-          className="absolute top-16 sm:top-20 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
+          className="absolute top-28 md:top-28 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
         >
           <div className="flex flex-col items-center p-6 sm:p-7 md:p-8 rounded-3xl apple-text-glass pointer-events-auto max-w-3xl border border-white/15">
             <EyebrowBadge>CREATIVE STUDIO & CAMPAIGN ENGINE</EyebrowBadge>
