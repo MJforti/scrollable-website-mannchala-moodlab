@@ -88,7 +88,6 @@ export function ScrollSequence({
       const ir = img.naturalWidth / img.naturalHeight;
       let w = cw, h = cw / ir;
       if (h < ch) { h = ch; w = ch * ir; }
-      if (window.innerWidth <= 768) { w *= 1.25; h *= 1.25; }
       ctx.fillStyle = BG;
       ctx.fillRect(0, 0, cw, ch);
       ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
