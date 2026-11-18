@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import { EyebrowBadge } from "../ui/EyebrowBadge";
 import { FilmStrip, UserCircle, Devices } from "@phosphor-icons/react";
+import { EyebrowBadge } from "../ui/EyebrowBadge";
+import { ScrollSequence, type SequenceCard } from "../ui/ScrollSequence";
 
-const FRAME_COUNT = 120;
+const framePath = (i: number) => `/frames/gear/frame_${String(i).padStart(4, "0")}.jpg`;
 
-const TECH_SPECS = [
+const TECH_SPECS: SequenceCard[] = [
   {
     id: "gear-spec-1",
     show: 0.12,
@@ -40,175 +40,18 @@ const TECH_SPECS = [
 ];
 
 export function GearShowcaseSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const introTextRef = useRef<HTMLDivElement>(null);
-  const framesRef = useRef<HTMLImageElement[]>([]);
-  const tickingRef = useRef(false);
-  const currentFrameIndexRef = useRef(0);
-  const prevVisibleIdsRef = useRef("");
-
-  const [visibleSpecs, setVisibleSpecs] = useState<string[]>([]);
-  const [scrollPercent, setScrollPercent] = useState(0);
-
-  // Cover-fit Canvas Drawer
-  const drawFrame = useCallback((index: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const img = framesRef.current[index];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
-
-    const cw = canvas.width;
-    const ch = canvas.height;
-
-    ctx.fillStyle = "#09090b";
-    ctx.fillRect(0, 0, cw, ch);
-
-    const imgRatio = img.naturalWidth / img.naturalHeight;
-    const canvasRatio = cw / ch;
-
-    let drawW: number;
-    let drawH: number;
-
-    if (canvasRatio > imgRatio) {
-      drawW = cw;
-      drawH = cw / imgRatio;
-    } else {
-      drawH = ch;
-      drawW = ch * imgRatio;
-    }
-
-    if (window.innerWidth <= 768) {
-      drawW *= 1.25;
-      drawH *= 1.25;
-    }
-
-    const drawX = (cw - drawW) / 2;
-    const drawY = (ch - drawH) / 2;
-
-    ctx.drawImage(img, drawX, drawY, drawW, drawH);
-  }, []);
-
-  // Canvas DPI resizing
-  const resizeCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
-
-    drawFrame(currentFrameIndexRef.current);
-  }, [drawFrame]);
-
-  // Load frames silently in background
-  useEffect(() => {
-    const imgs: HTMLImageElement[] = [];
-
-    for (let i = 1; i <= FRAME_COUNT; i++) {
-      const img = new Image();
-      const num = String(i).padStart(4, "0");
-      img.src = `/frames/gear/frame_${num}.jpg`;
-
-      if (i === 1) {
-        img.onload = () => {
-          resizeCanvas();
-          drawFrame(0);
-        };
-      } else {
-        img.onload = () => {
-          if (currentFrameIndexRef.current === i - 1) {
-            drawFrame(i - 1);
-          }
-        };
-      }
-      imgs.push(img);
-    }
-    framesRef.current = imgs;
-  }, [drawFrame, resizeCanvas]);
-
-  useEffect(() => {
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-    return () => window.removeEventListener("resize", resizeCanvas);
-  }, [resizeCanvas]);
-
-  // Scroll handler
-  useEffect(() => {
-    const handleScroll = () => {
-      if (tickingRef.current) return;
-      tickingRef.current = true;
-
-      requestAnimationFrame(() => {
-        const section = sectionRef.current;
-        if (!section) {
-          tickingRef.current = false;
-          return;
-        }
-
-        const rect = section.getBoundingClientRect();
-        const scrollableHeight = section.offsetHeight - window.innerHeight;
-        const rawProgress = -rect.top / scrollableHeight;
-        const progress = Math.min(1, Math.max(0, rawProgress));
-
-        setScrollPercent(Math.round(progress * 100));
-
-        const frameIndex = Math.min(
-          FRAME_COUNT - 1,
-          Math.floor(progress * FRAME_COUNT)
-        );
-
-        if (frameIndex !== currentFrameIndexRef.current) {
-          currentFrameIndexRef.current = frameIndex;
-          drawFrame(frameIndex);
-        }
-
-        // Section intro fade out
-        if (introTextRef.current) {
-          const opacity = Math.max(0, 1 - progress / 0.10);
-          introTextRef.current.style.opacity = String(opacity);
-        }
-
-        // Spec card visibility
-        const activeIds: string[] = [];
-        TECH_SPECS.forEach((spec) => {
-          if (progress >= spec.show && progress <= spec.hide) {
-            activeIds.push(spec.id);
-          }
-        });
-
-        const activeStr = activeIds.sort().join(",");
-        if (activeStr !== prevVisibleIdsRef.current) {
-          prevVisibleIdsRef.current = activeStr;
-          setVisibleSpecs(activeIds);
-        }
-
-        tickingRef.current = false;
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [drawFrame]);
-
   return (
-    <section
+    <ScrollSequence
       id="gear"
-      ref={sectionRef}
-      className="relative w-full bg-[#09090b] text-white border-t border-white/10 max-md:h-[180vh] h-[200vh]"
-    >
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#09090b] flex items-center justify-center">
-        <canvas ref={canvasRef} className="block h-full w-full object-cover opacity-90" />
-
-        {/* Section Intro Overlay with Apple UI Glass Effect */}
+      framePath={framePath}
+      frameCount={120}
+      cards={TECH_SPECS}
+      label="02 / CREATIVE STUDIO SUITE"
+      className="text-white border-t border-white/10"
+      canvasClassName="opacity-90"
+      intro={(ref) => (
         <div
-          ref={introTextRef}
+          ref={ref}
           className="absolute top-16 sm:top-20 inset-x-0 flex flex-col items-center text-center px-4 md:px-6 pointer-events-none z-20"
         >
           <div className="flex flex-col items-center p-6 sm:p-7 md:p-8 rounded-3xl apple-text-glass pointer-events-auto max-w-3xl border border-white/15">
@@ -219,55 +62,7 @@ export function GearShowcaseSection() {
             </h2>
           </div>
         </div>
-
-        {/* Minimalist Spec Cards */}
-        {TECH_SPECS.map((spec) => {
-          const isVisible = visibleSpecs.includes(spec.id);
-          const Icon = spec.icon;
-          return (
-            <div
-              key={spec.id}
-              className={`absolute ${spec.position} pointer-events-auto transition-all duration-500 ease-out z-30 ${
-                isVisible
-                  ? "opacity-100 translate-y-0 scale-100 shadow-2xl"
-                  : "opacity-0 translate-y-4 scale-95 pointer-events-none"
-              }`}
-            >
-              <div className="card-surface p-4 sm:p-6 border border-white/20">
-                <div className="flex items-center justify-between mb-2.5 sm:mb-3">
-                  <span className="text-[9px] sm:text-[10px] font-mono font-bold text-zinc-300 tracking-wider">
-                    {spec.badge}
-                  </span>
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/15 flex items-center justify-center text-white border border-white/10 shadow-inner">
-                    <Icon size={13} weight="bold" />
-                  </div>
-                </div>
-                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight mb-1">
-                  {spec.title}
-                </h3>
-                <p className="text-[11px] sm:text-xs leading-relaxed text-zinc-300 font-normal">
-                  {spec.description}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Bottom Sequence Progress Indicator */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 sm:bottom-6 z-20 px-4 md:px-12 flex flex-col gap-2">
-          <div className="w-full bg-white/10 h-0.5 rounded-full overflow-hidden">
-            <div
-              className="bg-white h-full transition-all duration-150 ease-out"
-              style={{ width: `${scrollPercent}%` }}
-            />
-          </div>
-          <div className="flex items-center justify-between font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.22em] text-zinc-400 font-semibold">
-            <span>02 / CREATIVE STUDIO SUITE</span>
-            <span className="hidden sm:inline">MANNCHALA MOODLAB</span>
-            <span>SEQUENCE {scrollPercent}%</span>
-          </div>
-        </div>
-      </div>
-    </section>
+      )}
+    />
   );
 }
