@@ -1,21 +1,10 @@
-<!-- Kush17narwal · terminal profile -->
+<!-- Kush17narwal · terminal profile — every panel below is an animated SVG in this repo -->
 <p align="center">
-  <a href="https://github.com/Kush17narwal">
-    <img src="./terminal.svg" alt="root@kush17narwal: a terminal boots, prints KUSH, then cat about.txt and neofetch: competitive programmer and full-stack builder. LeetCode (C++, 144 commits), digital_doppelganger (human-or-bot detection with 4 DFAs, Next.js + FastAPI), prep-zone (coming soon)." width="100%">
-  </a>
+<a href="https://github.com/Kush17narwal"><img src="./terminal.svg" width="100%" alt="root@kush17narwal: terminal boots, prints KUSH, then about.txt and neofetch. Competitive programmer and full-stack builder."></a>
+<img src="./skills.svg" width="100%" alt="diag --skills: C++ algorithms, DSA, Next.js and React, FastAPI, PostgreSQL and Docker, automata theory.">
+<img src="./projects.svg" width="100%" alt="ls -la ~/projects: LeetCode, digital_doppelganger, prep-zone.">
+<a href="https://github.com/Kush17narwal/LeetCode"><img src="./project-leetcode.svg" width="100%" alt="LeetCode: C++ solutions grouped by topic, 144 commits. Click to open."></a>
+<a href="https://github.com/Kush17narwal/digital_doppelganger"><img src="./project-doppelganger.svg" width="100%" alt="digital_doppelganger: human-or-bot detection with four DFAs. Next.js, FastAPI, PostgreSQL, Docker. Click to open."></a>
+<a href="https://github.com/Kush17narwal/prep-zone"><img src="./project-prepzone.svg" width="100%" alt="prep-zone: coming soon. Click to open."></a>
+<img src="./footer.svg" width="100%" alt="cat now.txt, then exit: connection closed, leave a star to reconnect.">
 </p>
-
-```console
-root@kush17narwal:~# ls ~/projects
-```
-
-| `$ cd` | stack | what it does |
-|:--|:--|:--|
-| [`LeetCode/`](https://github.com/Kush17narwal/LeetCode) | C++ | Solutions grouped by topic: arrays, DP, binary search · 144 commits |
-| [`digital_doppelganger/`](https://github.com/Kush17narwal/digital_doppelganger) | Next.js · FastAPI · PostgreSQL · Docker | Is a web session human or a bot? 4 DFAs in a product automaton decide |
-| [`prep-zone/`](https://github.com/Kush17narwal/prep-zone) | — | booting… |
-
-```console
-root@kush17narwal:~# exit
-Connection closed. Leave a ⭐ to reconnect.
-```
