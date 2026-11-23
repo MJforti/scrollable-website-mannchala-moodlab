@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" role="img" aria-label="neofetch output for kush17narwal">
+<defs><filter id="g"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="#000" fill-opacity=".4"/></pattern></defs>
+<style>.t{font:400 18px 'Courier New',monospace;white-space:pre}.k{fill:#fff0c9;font-weight:700}
+.bar{animation:bw 2.4s ease-in-out infinite alternate}.b2{animation-duration:3.1s}.b3{animation-duration:1.9s}.b4{animation-duration:2.7s}
+@keyframes bw{from{transform:scaleX(.35)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.bar{animation:none}}</style>
+<rect width="1200" height="360" rx="12" fill="#0b0700"/>
+<g filter="url(#g)" fill="#ffb000">
+<text x="40" y="48" class="t"><tspan class="k">root@kush17narwal</tspan>:~# neofetch</text>
+<g class="t" fill="#ffb000">
+<text x="60" y="100">      .--.</text><text x="60" y="124">     |o_o |</text><text x="60" y="148">     |:_/ |</text>
+<text x="60" y="172">    //   \ \</text><text x="60" y="196">   (|     | )</text><text x="60" y="220">  /'\_   _/`\</text><text x="60" y="244">  \___)=(___/</text>
+</g>
+<text x="330" y="100" class="t"><tspan class="k">kush17narwal</tspan>@<tspan class="k">github</tspan></text>
+<text x="330" y="124" class="t" fill="#a86f00">────────────────────────</text>
+<text x="330" y="148" class="t"><tspan class="k">OS      </tspan> Competitive Programmer x86_64</text>
+<text x="330" y="172" class="t"><tspan class="k">Kernel  </tspan> C++ (LeetCode · 144 commits)</text>
+<text x="330" y="196" class="t"><tspan class="k">Shell   </tspan> TypeScript · Python</text>
+<text x="330" y="220" class="t"><tspan class="k">Stack   </tspan> Next.js · React · Tailwind · FastAPI</text>
+<text x="330" y="244" class="t"><tspan class="k">Data    </tspan> PostgreSQL · Docker</text>
+<text x="330" y="268" class="t"><tspan class="k">Brain   </tspan> DFAs · product automata · DP</text>
+<text x="330" y="292" class="t"><tspan class="k">Uptime  </tspan> always shipping</text>
+<g transform="translate(330 312)"><rect width="34" height="18" fill="#ffb000"/><rect x="38" width="34" height="18" fill="#a86f00"/><rect x="76" width="34" height="18" fill="#fff0c9"/><rect x="114" width="34" height="18" fill="#c6ff6a"/><rect x="152" width="34" height="18" fill="#ff5a3c"/></g>
+<!-- sysmon -->
+<text x="880" y="100" class="t k">SYSMON</text>
+<g class="t"><text x="880" y="140">dsa </text><text x="880" y="180">web </text><text x="880" y="220">api </text><text x="880" y="260">dfa </text></g>
+<g transform="translate(940 126)"><rect width="200" height="16" fill="#4a3100"/><rect width="200" height="16" class="bar" style="transform-origin:0 0"/></g>
+<g transform="translate(940 166)"><rect width="200" height="16" fill="#4a3100"/><rect width="200" height="16" class="bar b2" style="transform-origin:0 0"/></g>
+<g transform="translate(940 206)"><rect width="200" height="16" fill="#4a3100"/><rect width="200" height="16" class="bar b3" style="transform-origin:0 0"/></g>
+<g transform="translate(940 246)"><rect width="200" height="16" fill="#4a3100"/><rect width="200" height="16" class="bar b4" style="transform-origin:0 0"/></g>
+</g>
+<rect width="1200" height="360" fill="url(#scan)"/>
+</svg>

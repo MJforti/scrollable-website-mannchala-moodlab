@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="High score table for Kush17narwal's projects">
+<defs><filter id="g"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="#000" fill-opacity=".35"/></pattern></defs>
+<style>.h{font:900 26px 'Courier New',monospace;letter-spacing:6px}.r{font:700 21px 'Courier New',monospace;letter-spacing:3px}
+.row{opacity:0;animation:in .4s steps(4) forwards}.r1{animation-delay:.3s}.r2{animation-delay:.7s}.r3{animation-delay:1.1s}.r4{animation-delay:1.5s}
+@keyframes in{to{opacity:1}}.b{animation:b 1s steps(1) infinite}@keyframes b{50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.row{opacity:1;animation:none}.b{animation:none}}</style>
+<rect width="1200" height="300" rx="14" fill="#07020f"/>
+<rect x="8" y="8" width="1184" height="284" rx="10" fill="none" stroke="#19f6ff" stroke-width="2" filter="url(#g)"/>
+<text x="600" y="56" text-anchor="middle" class="h b" fill="#ff2bd6" filter="url(#g)">— HIGH SCORES —</text>
+<g class="r">
+<text x="90" y="98" fill="#8a6fb0">RANK</text><text x="250" y="98" fill="#8a6fb0">STAGE</text><text x="700" y="98" fill="#8a6fb0">WEAPON</text><text x="1110" y="98" text-anchor="end" fill="#8a6fb0">SCORE</text>
+<g class="row r1" fill="#ffb627"><text x="90" y="140">1ST</text><text x="250" y="140">LEETCODE</text><text x="700" y="140">C++</text><text x="1110" y="140" text-anchor="end">144 COMMITS</text></g>
+<g class="row r2" fill="#19f6ff"><text x="90" y="180">2ND</text><text x="250" y="180">DIGITAL_DOPPELGANGER</text><text x="700" y="180">TS · PY · DFA</text><text x="1110" y="180" text-anchor="end">BOSS LEVEL</text></g>
+<g class="row r3" fill="#ff2bd6"><text x="90" y="220">3RD</text><text x="250" y="220">PREP-ZONE</text><text x="700" y="220">???</text><text x="1110" y="220" text-anchor="end">LOADING…</text></g>
+<g class="row r4" fill="#b6ff2b"><text x="90" y="260">YOU</text><text x="250" y="260">YOUR REPO HERE</text><text x="700" y="260">COLLAB</text><text x="1110" y="260" text-anchor="end">PRESS START</text></g>
+</g>
+<rect width="1200" height="300" fill="url(#scan)"/>
+</svg>

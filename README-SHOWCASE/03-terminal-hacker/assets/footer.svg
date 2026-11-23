@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" width="1200" height="120" role="img" aria-label="Connection closed">
+<style>.t{font:400 18px 'Courier New',monospace}.c{animation:b 1s steps(1) infinite}@keyframes b{50%{opacity:0}}@media (prefers-reduced-motion:reduce){.c{animation:none}}</style>
+<rect width="1200" height="120" rx="12" fill="#0b0700"/>
+<text x="40" y="50" class="t" fill="#a86f00">Connection to kush17narwal closed. Leave a ⭐ to reconnect.</text>
+<text x="40" y="84" class="t" fill="#ffb000"><tspan fill="#fff0c9">root@kush17narwal</tspan>:~# exit</text>
+<rect x="355" y="68" width="11" height="20" fill="#ffb000" class="c"/>
+</svg>

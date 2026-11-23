@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" role="img" aria-label="root@kush17narwal terminal booting">
+<defs><filter id="g"><feGaussianBlur stdDeviation="1.6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="2" fill="#000" fill-opacity=".4"/></pattern>
+<radialGradient id="vig" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".8"/></radialGradient>
+<clipPath id="ty"><rect x="282" y="350" height="34" width="0"><animate attributeName="width" values="0;0;360;360;0" keyTimes="0;.47;.72;.96;1" dur="12s" repeatCount="indefinite"/></rect></clipPath>
+</defs>
+<style>
+.t{font:400 19px 'Courier New',monospace}.big{font:700 15px 'Courier New',monospace;white-space:pre}
+.l{opacity:0;animation:l 12s steps(1) infinite}
+.a1{animation-delay:.4s}.a2{animation-delay:1s}.a3{animation-delay:1.6s}.a4{animation-delay:2.2s}.a5{animation-delay:2.8s}.a6{animation-delay:3.6s}.a7{animation-delay:4.4s}.a8{animation-delay:5.2s}
+@keyframes l{0%{opacity:1}92%{opacity:1}100%{opacity:0}}
+.type{animation:ty 12s steps(34) infinite;animation-delay:5.6s}@keyframes ty{0%{width:0}25%,92%{width:420px}100%{width:0}}
+.cur{animation:b 1s steps(1) infinite}@keyframes b{50%{opacity:0}}
+.fl{animation:fl .15s infinite}@keyframes fl{50%{opacity:.97}}
+@media (prefers-reduced-motion:reduce){.l{opacity:1;animation:none}.cur,.fl,.type{animation:none}.type{width:420px}}
+</style>
+<rect width="1200" height="420" rx="12" fill="#0b0700"/>
+<rect x="1" y="1" width="1198" height="34" rx="12" fill="#1a1100"/>
+<circle cx="24" cy="18" r="6" fill="#ff5a3c"/><circle cx="44" cy="18" r="6" fill="#ffb000"/><circle cx="64" cy="18" r="6" fill="#c6ff6a"/>
+<text x="600" y="23" text-anchor="middle" class="t" style="font-size:13px" fill="#a86f00">[0] zsh — root@kush17narwal — 120×32</text>
+<g filter="url(#g)" class="fl" fill="#ffb000">
+<text x="40" y="74" class="t l a1" fill="#a86f00">KUSH BIOS v17.0 · memory test 65536K OK</text>
+<text x="40" y="102" class="t l a2">loading kernel.cpp ............ [████████████████] <tspan fill="#c6ff6a">OK</tspan></text>
+<text x="40" y="130" class="t l a3">loading dsa.leetcode .......... [████████████████] <tspan fill="#c6ff6a">OK</tspan></text>
+<text x="40" y="158" class="t l a4">loading automata.dfa[4] ....... [████████████████] <tspan fill="#c6ff6a">OK</tspan></text>
+<text x="40" y="186" class="t l a5">loading stack.nextjs+fastapi .. [████████████████] <tspan fill="#c6ff6a">OK</tspan></text>
+<g class="l a6" fill="#fff0c9"><text x="40" y="232" class="big"> ██╗  ██╗██╗   ██╗███████╗██╗  ██╗</text>
+<text x="40" y="250" class="big"> ██║ ██╔╝██║   ██║██╔════╝██║  ██║</text>
+<text x="40" y="268" class="big"> █████╔╝ ██║   ██║███████╗███████║</text>
+<text x="40" y="286" class="big"> ██╔═██╗ ██║   ██║╚════██║██╔══██║</text>
+<text x="40" y="304" class="big"> ██║  ██╗╚██████╔╝███████║██║  ██║</text>
+<text x="40" y="322" class="big"> ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝</text></g>
+<text x="440" y="262" class="t l a7" fill="#a86f00">// competitive programmer · full-stack builder</text>
+<text x="440" y="290" class="t l a7" fill="#a86f00">// teaching machines to spot other machines</text>
+<g class="l a8"><text x="40" y="374" class="t"><tspan fill="#fff0c9">root@kush17narwal</tspan>:~# </text>
+<text x="282" y="374" class="t" clip-path="url(#ty)">./hire --mode=collab --stars=on</text></g>
+<rect x="640" y="358" width="11" height="20" fill="#ffb000" class="cur"/>
+</g>
+<rect width="1200" height="420" fill="url(#scan)"/><rect width="1200" height="420" fill="url(#vig)"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 160" width="1200" height="160" role="img" aria-label="Game over — continue?">
+<defs><filter id="g"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+<style>.t{font:900 54px 'Courier New',monospace;letter-spacing:10px}.s{font:700 16px 'Courier New',monospace;letter-spacing:5px}
+.c{animation:c 10s steps(10) infinite}@keyframes c{from{opacity:1}}
+.b{animation:b 1s steps(1) infinite}@keyframes b{50%{opacity:0}}@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style>
+<rect width="1200" height="160" fill="#07020f"/>
+<text x="600" y="78" text-anchor="middle" class="t" fill="#ff2bd6" filter="url(#g)">GAME OVER?</text>
+<text x="600" y="120" text-anchor="middle" class="s b" fill="#19f6ff">CONTINUE? 9 · 8 · 7 · INSERT A STAR ⭐ TO KEEP PLAYING</text>
+</svg>

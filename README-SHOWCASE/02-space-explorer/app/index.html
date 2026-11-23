@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Space Explorer — Mission Control</title>
+<meta name="description" content="Pilot a ship through an interactive solar system with mouse-driven parallax.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#050816;--ink2:#0b1230;--sun:#ff7a1a;--cream:#f3ead7;--dim:#8a93b8;--line:#f3ead722;--mono:"Space Mono",monospace;--disp:"Syne",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--ink);color:var(--cream);font-family:var(--mono);overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#space{cursor:crosshair}
+.ui{position:fixed;inset:0;pointer-events:none;display:grid;grid-template-columns:300px 1fr 260px;grid-template-rows:auto 1fr auto;padding:24px;gap:16px}
+.ui>*{pointer-events:auto}
+.brand{grid-column:1/3}
+.brand small{font-size:10px;letter-spacing:.3em;color:var(--sun);display:flex;align-items:center;gap:10px}
+.brand small::before{content:"";width:28px;height:1px;background:var(--sun)}
+.brand h1{font-family:var(--disp);font-weight:800;font-size:clamp(34px,6vw,84px);line-height:.88;letter-spacing:-.03em;margin-top:10px}
+.brand h1 em{font-style:normal;-webkit-text-stroke:1px var(--cream);color:transparent}
+.clock{text-align:right;font-size:11px;line-height:1.8;color:var(--dim)}
+.clock b{color:var(--cream);font-weight:400}
+.nav{grid-row:2/3;align-self:end;border-top:1px solid var(--line)}
+.nav h2,.panel h2{font-size:10px;letter-spacing:.3em;color:var(--dim);font-weight:400;padding:12px 0}
+.nav ol{list-style:none;counter-reset:p}
+.nav li button{all:unset;cursor:pointer;display:grid;grid-template-columns:28px 1fr auto;align-items:center;width:100%;padding:7px 0;border-bottom:1px solid var(--line);font-size:12px;transition:padding .25s,color .25s}
+.nav li button::before{counter-increment:p;content:"0" counter(p);color:var(--dim);font-size:10px}
+.nav li button span{font-size:10px;color:var(--dim)}
+.nav li button:hover,.nav li button:focus-visible{padding-left:8px;color:var(--sun)}
+.nav li button.on{color:var(--sun)}
+.panel{grid-column:3;grid-row:2/3;align-self:end;border-top:1px solid var(--line);min-height:240px}
+.panel .name{font-family:var(--disp);font-weight:700;font-size:44px;letter-spacing:-.02em;line-height:1}
+.panel dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:11px;margin-top:16px}
+.panel dt{color:var(--dim)}.panel dd{text-align:right}
+.panel p{font-size:11px;line-height:1.7;color:var(--dim);margin-top:14px}
+.bar{grid-column:1/4;display:flex;gap:22px;align-items:center;flex-wrap:wrap;font-size:11px;border-top:1px solid var(--line);padding-top:14px}
+.bar label{display:flex;gap:10px;align-items:center;color:var(--dim)}
+input[type=range]{accent-color:var(--sun);width:120px}
+.btn{all:unset;cursor:pointer;border:1px solid var(--cream);padding:8px 14px;font-size:10px;letter-spacing:.2em;transition:background .2s,color .2s}
+.btn:hover,.btn.on{background:var(--cream);color:var(--ink)}
+.telemetry{margin-left:auto;display:flex;gap:22px;color:var(--dim)}
+.telemetry b{color:var(--cream);font-weight:400;display:inline-block;min-width:54px}
+.reticle{position:fixed;width:64px;height:64px;margin:-32px 0 0 -32px;pointer-events:none;border:1px solid var(--sun);border-radius:50%;
+  opacity:0;transition:opacity .3s;animation:spin 6s linear infinite}
+.reticle::before,.reticle::after{content:"";position:absolute;background:var(--sun)}
+.reticle::before{left:50%;top:-6px;width:1px;height:76px}.reticle::after{top:50%;left:-6px;height:1px;width:76px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;top:22%;transform:translate(-50%,0);font-family:var(--disp);font-size:clamp(18px,3vw,30px);letter-spacing:.02em;
+  pointer-events:none;opacity:0;transition:opacity .6s,transform .6s;text-align:center}
+.toast small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--sun);margin-bottom:8px}
+.toast.show{opacity:1;transform:translate(-50%,-10px)}
+.end{position:fixed;right:24px;top:24px;font-size:10px;letter-spacing:.2em}
+.end a{color:var(--cream)}
+@media (max-width:900px){
+  html,body{overflow:auto}
+  .ui{position:relative;min-height:100%;grid-template-columns:1fr;grid-template-rows:auto;padding:16px;background:linear-gradient(transparent 40%,#050816ee 75%)}
+  .brand,.bar,.panel,.nav{grid-column:1;grid-row:auto}
+  .clock{display:none}.brand{min-height:52vh}
+  .telemetry{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){.reticle{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="space" aria-label="Interactive solar system. Click a planet to travel there."></canvas>
+<div class="reticle" id="reticle"></div>
+<div class="toast" id="toast"></div>
+<div class="ui">
+  <header class="brand">
+    <small>DEEP FIELD MISSION · VESSEL "KUSH17NARWAL"</small>
+    <h1>Space<br><em>Explorer</em></h1>
+  </header>
+  <div class="clock"><div>MET <b id="met">00:00:00</b></div><div>SOL <b id="sol">0001</b></div><div><a href="https://github.com/Kush17narwal" style="color:inherit">← GITHUB</a></div></div>
+  <nav class="nav" aria-label="Destinations"><h2>DESTINATIONS</h2><ol id="list"></ol></nav>
+  <aside class="panel" aria-live="polite">
+    <h2>TARGET</h2>
+    <div class="name" id="pName">Sol</div>
+    <dl id="pData"></dl>
+    <p id="pText"></p>
+  </aside>
+  <div class="bar">
+    <button class="btn" id="manual" aria-pressed="false">MANUAL PILOT [M]</button>
+    <button class="btn" id="follow" aria-pressed="false">CHASE CAM [C]</button>
+    <label>TIME WARP <input type="range" id="warp" min="0" max="8" step=".1" value="1"> <span id="warpV">1.0×</span></label>
+    <div class="telemetry"><span>VEL <b id="vel">0</b></span><span>HDG <b id="hdg">000°</b></span><span>DST <b id="dst">—</b></span></div>
+  </div>
+</div>
+<script>
+(()=>{
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv=document.getElementById('space'),ctx=cv.getContext('2d');
+let W,H,DPR,cx,cy,scale;
+function resize(){DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);
+  cx=W/2;cy=H*(W<900?.32:.52);scale=Math.min(W,H*1.6)/1250;makeStars()}
+const PLANETS=[
+ {n:'Mercury',r:4,a:70,p:.24,c:['#c9b8a6','#6b5b4d'],d:'0.39 AU',day:'59 d',m:'0.055 M⊕',t:'Scorched, cratered and fast — a year lasts 88 Earth days.'},
+ {n:'Venus',r:7,a:105,p:.62,c:['#ffe2a8','#c58b3c'],d:'0.72 AU',day:'243 d',m:'0.815 M⊕',t:'Shrouded in sulphuric clouds. It spins backwards.'},
+ {n:'Earth',r:7.5,a:145,p:1,c:['#7fd4ff','#1b4fa3'],d:'1.00 AU',day:'24 h',m:'1.000 M⊕',t:'Home. The only known shoreline in the cosmic ocean.',moon:1},
+ {n:'Mars',r:5.5,a:190,p:1.88,c:['#ff9a6b','#8f2d12'],d:'1.52 AU',day:'24.6 h',m:'0.107 M⊕',t:'Rust dust, Olympus Mons and two tiny moons.'},
+ {n:'Jupiter',r:17,a:280,p:11.86,c:['#f0d2a8','#a8713e'],d:'5.20 AU',day:'9.9 h',m:'317.8 M⊕',t:'A storm larger than Earth has raged here for centuries.',bands:1},
+ {n:'Saturn',r:14,a:375,p:29.4,c:['#f7e3b4','#b38b4d'],d:'9.58 AU',day:'10.7 h',m:'95.2 M⊕',t:'Its rings are mostly water ice, some pieces as big as houses.',ring:1},
+ {n:'Uranus',r:10,a:455,p:84,c:['#c8f4f4','#4fa3b5'],d:'19.2 AU',day:'17.2 h',m:'14.5 M⊕',t:'Tipped on its side, it rolls around the Sun.',ring:2},
+ {n:'Neptune',r:10,a:525,p:164.8,c:['#8fb2ff','#2a3fb0'],d:'30.1 AU',day:'16.1 h',m:'17.1 M⊕',t:'Supersonic winds at the edge of sunlight.'}
+];
+PLANETS.forEach((p,i)=>{p.ang=i*1.7+Math.random();p.x=0;p.y=0;p.z=0});
+let stars=[],shooters=[];
+function makeStars(){stars=[];const n=Math.min(900,(W*H)/1600|0);for(let i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,z:Math.random()**2,tw:Math.random()*6})}
+resize();addEventListener('resize',resize);
+
+let mx=0,my=0,tmx=0,tmy=0, warp=1, simT=0, tilt=.42;
+addEventListener('pointermove',e=>{tmx=e.clientX/W-.5;tmy=e.clientY/H-.5});
+const ship={x:0,y:-260,vx:0,vy:0,a:0,trail:[],target:null,manual:false,thrust:false};
+let follow=false, zoom=1, tz=1;
+
+function project(p){ // orbit plane -> screen, with mouse tilt
+  const t=tilt+my*.5, rot=mx*.6;
+  const x=p.x*Math.cos(rot)-p.y*Math.sin(rot), y=p.x*Math.sin(rot)+p.y*Math.cos(rot);
+  return {x:x, y:y*t, z:y};
+}
+function toScreen(v){return {x:cx+(v.x-cam.x)*scale*zoom,y:cy+(v.y-cam.y)*scale*zoom}}
+const cam={x:0,y:0};
+
+function drawPlanet(p,s,r){
+  const g=ctx.createRadialGradient(s.x-r*.4,s.y-r*.4,r*.1,s.x,s.y,r);
+  g.addColorStop(0,p.c[0]);g.addColorStop(1,p.c[1]);
+  if(p.ring){ctx.save();ctx.translate(s.x,s.y);ctx.scale(1,.32+my*.3);ctx.beginPath();ctx.arc(0,0,r*2.1,Math.PI,0);
+    ctx.strokeStyle=p.ring===1?'#e9d29b99':'#c8f4f455';ctx.lineWidth=r*.5;ctx.stroke();ctx.restore()}
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,r,0,7);ctx.fill();
+  if(p.bands){ctx.save();ctx.beginPath();ctx.arc(s.x,s.y,r,0,7);ctx.clip();ctx.globalAlpha=.25;ctx.fillStyle='#6b3b1a';
+    for(let k=-3;k<=3;k++)ctx.fillRect(s.x-r,s.y+k*r*.28,r*2,r*.1);ctx.globalAlpha=.7;ctx.fillStyle='#c4492b';
+    ctx.beginPath();ctx.ellipse(s.x+r*.3,s.y+r*.3,r*.22,r*.12,0,0,7);ctx.fill();ctx.restore()}
+  // night side shading towards away from sun
+  const sun=toScreen(project({x:0,y:0}));const a=Math.atan2(s.y-sun.y,s.x-sun.x);
+  const sh=ctx.createLinearGradient(s.x-Math.cos(a)*r,s.y-Math.sin(a)*r,s.x+Math.cos(a)*r,s.y+Math.sin(a)*r);
+  sh.addColorStop(0,'#0000');sh.addColorStop(.55,'#0000');sh.addColorStop(1,'#000c');
+  ctx.fillStyle=sh;ctx.beginPath();ctx.arc(s.x,s.y,r,0,7);ctx.fill();
+  if(p.ring){ctx.save();ctx.translate(s.x,s.y);ctx.scale(1,.32+my*.3);ctx.beginPath();ctx.arc(0,0,r*2.1,0,Math.PI);
+    ctx.strokeStyle=p.ring===1?'#e9d29bcc':'#c8f4f477';ctx.lineWidth=r*.5;ctx.stroke();ctx.restore()}
+}
+
+let last=performance.now(), met=0;
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now; met+=dt;
+  mx+=(tmx-mx)*.05;my+=(tmy-my)*.05;
+  simT+=dt*warp*(RM?.3:1);
+  ctx.fillStyle='#050816';ctx.fillRect(0,0,W,H);
+  // nebula wash
+  const neb=ctx.createRadialGradient(W*.8-mx*80,H*.2-my*80,10,W*.8,H*.2,W*.6);
+  neb.addColorStop(0,'#3a1b5a33');neb.addColorStop(1,'#0000');ctx.fillStyle=neb;ctx.fillRect(0,0,W,H);
+  // stars parallax
+  for(const s of stars){const px=(s.x-mx*120*s.z+W)%W,py=(s.y-my*120*s.z+H)%H;
+    const tw=RM?1:.6+.4*Math.sin(met*2+s.tw);ctx.fillStyle=`rgba(243,234,215,${(.25+s.z*.75)*tw})`;
+    const sz=.5+s.z*1.6;ctx.fillRect(px,py,sz,sz)}
+  // shooting stars
+  if(!RM&&Math.random()<.012)shooters.push({x:Math.random()*W,y:-10,vx:-6-Math.random()*6,vy:4+Math.random()*4,l:1});
+  shooters=shooters.filter(s=>(s.l-=.012)>0&&s.y<H+50);
+  for(const s of shooters){s.x+=s.vx;s.y+=s.vy;const g=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*12,s.y-s.vy*12);
+    g.addColorStop(0,`rgba(255,240,220,${s.l})`);g.addColorStop(1,'#fff0');ctx.strokeStyle=g;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*12,s.y-s.vy*12);ctx.stroke()}
+
+  // camera
+  tz=follow?2.2:1; zoom+=(tz-zoom)*.04;
+  const fc=follow?project(ship):{x:0,y:0}; cam.x+=(fc.x-cam.x)*.08; cam.y+=(fc.y-cam.y)*.08;
+
+  // update planets
+  for(const p of PLANETS){p.ang+= (dt*warp*(RM?.3:1))*.9/p.p; p.x=Math.cos(p.ang)*p.a; p.y=Math.sin(p.ang)*p.a}
+  // orbits
+  ctx.lineWidth=1;
+  for(const p of PLANETS){ctx.beginPath();for(let k=0;k<=96;k++){const a=k/96*Math.PI*2;const s=toScreen(project({x:Math.cos(a)*p.a,y:Math.sin(a)*p.a}));k?ctx.lineTo(s.x,s.y):ctx.moveTo(s.x,s.y)}
+    ctx.strokeStyle=ship.target===p?'#ff7a1a88':'#f3ead716';ctx.stroke()}
+  // collect bodies and depth sort
+  const bodies=PLANETS.map(p=>({p,v:project(p)}));bodies.push({sun:1,v:project({x:0,y:0})});
+  bodies.sort((a,b)=>a.v.z-b.v.z);
+  for(const b of bodies){const s=toScreen(b.v);
+    if(b.sun){const R=34*scale*zoom;const g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,R*5);
+      g.addColorStop(0,'#fff7e0');g.addColorStop(.12,'#ffcf6b');g.addColorStop(.25,'#ff7a1a55');g.addColorStop(1,'#ff7a1a00');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(s.x,s.y,R*5,0,7);ctx.fill();
+      ctx.fillStyle='#fff3d6';ctx.beginPath();ctx.arc(s.x,s.y,R*(1+(RM?0:Math.sin(met*3)*.02)),0,7);ctx.fill();continue}
+    const p=b.p,r=Math.max(2,p.r*scale*zoom*(1+b.v.z/1400));p.sx=s.x;p.sy=s.y;p.sr=r;
+    drawPlanet(p,s,r);
+    if(p.moon){const ma=met*2.2;ctx.fillStyle='#ddd';ctx.beginPath();ctx.arc(s.x+Math.cos(ma)*r*2.4,s.y+Math.sin(ma)*r*.9,Math.max(1.2,r*.27),0,7);ctx.fill()}
+    if(hover===p||ship.target===p){ctx.strokeStyle='#ff7a1a';ctx.beginPath();ctx.arc(s.x,s.y,r+8,0,7);ctx.stroke();
+      ctx.fillStyle='#f3ead7';ctx.font='10px "Space Mono"';ctx.fillText(p.n.toUpperCase(),s.x+r+12,s.y-r-4)}
+  }
+  updateShip(dt);drawShip();
+  hud();
+  requestAnimationFrame(frame);
+}
+
+const keys={};
+addEventListener('keydown',e=>{keys[e.key]=1;if(e.key==='m'||e.key==='M')setManual(!ship.manual);if(e.key==='c'||e.key==='C')setFollow(!follow);
+  if(ship.manual&&e.key.startsWith('Arrow'))e.preventDefault();const n=+e.key;if(n>=1&&n<=8)go(PLANETS[n-1])});
+addEventListener('keyup',e=>keys[e.key]=0);
+function updateShip(dt){
+  const k=60*dt;
+  if(ship.manual){
+    if(keys.ArrowLeft||keys.a)ship.a-=.07*k; if(keys.ArrowRight||keys.d)ship.a+=.07*k;
+    ship.thrust=!!(keys.ArrowUp||keys.w);
+    if(ship.thrust){ship.vx+=Math.cos(ship.a)*.12*k;ship.vy+=Math.sin(ship.a)*.12*k}
+    if(keys.ArrowDown||keys.s){ship.vx*=.94;ship.vy*=.94}
+    // gentle gravity well
+    const d=Math.hypot(ship.x,ship.y)||1;ship.vx-=ship.x/d**3*900*k;ship.vy-=ship.y/d**3*900*k;
+  } else if(ship.target){
+    const p=ship.target,orbitR=p.r*2.8+14, oa=met*1.4;
+    const tx=p.x+Math.cos(oa)*orbitR,ty=p.y+Math.sin(oa)*orbitR;
+    const dx=tx-ship.x,dy=ty-ship.y,d=Math.hypot(dx,dy);
+    const sp=Math.min(9,d*.06+.4);const desx=dx/d*sp,desy=dy/d*sp;
+    ship.vx+=(desx-ship.vx)*.08*k;ship.vy+=(desy-ship.vy)*.08*k;ship.thrust=d>40;
+    ship.a=Math.atan2(ship.vy,ship.vx);
+    if(d<30&&!ship.arrived){ship.arrived=1;toast('ORBIT ESTABLISHED',p.n)}
+  } else {ship.vx*=.99;ship.vy*=.99;ship.vx+=Math.cos(met*.5)*.01;ship.vy+=Math.sin(met*.5)*.01;ship.a=Math.atan2(ship.vy,ship.vx)||ship.a}
+  const v=Math.hypot(ship.vx,ship.vy);if(v>11){ship.vx*=11/v;ship.vy*=11/v}
+  ship.x+=ship.vx*k;ship.y+=ship.vy*k;
+  const lim=640;if(Math.abs(ship.x)>lim)ship.vx*=-.6,ship.x=Math.sign(ship.x)*lim;if(Math.abs(ship.y)>lim)ship.vy*=-.6,ship.y=Math.sign(ship.y)*lim;
+  ship.trail.push({x:ship.x,y:ship.y,t:ship.thrust});if(ship.trail.length>(RM?10:70))ship.trail.shift();
+}
+function drawShip(){
+  ctx.lineCap='round';
+  for(let i=1;i<ship.trail.length;i++){const a=toScreen(project(ship.trail[i-1])),b=toScreen(project(ship.trail[i]));
+    ctx.strokeStyle=`rgba(255,122,26,${i/ship.trail.length*.7})`;ctx.lineWidth=i/ship.trail.length*3;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+  const s=toScreen(project(ship));const h=project({x:ship.x+Math.cos(ship.a)*10,y:ship.y+Math.sin(ship.a)*10});const hs=toScreen(h);
+  const ang=Math.atan2(hs.y-s.y,hs.x-s.x);
+  ctx.save();ctx.translate(s.x,s.y);ctx.rotate(ang);const z=Math.max(.8,zoom*.9);ctx.scale(z,z);
+  if(ship.thrust&&!RM){ctx.fillStyle='#ffcf6b';ctx.beginPath();ctx.moveTo(-7,-3);ctx.lineTo(-14-Math.random()*8,0);ctx.lineTo(-7,3);ctx.fill()}
+  ctx.fillStyle='#f3ead7';ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-7,-7);ctx.lineTo(-4,0);ctx.lineTo(-7,7);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#ff7a1a';ctx.fillRect(-2,-1.5,6,3);ctx.restore();
+}
+const $=id=>document.getElementById(id);
+let lastHud=0;
+function hud(){
+  if(performance.now()-lastHud<120)return;lastHud=performance.now();
+  const v=Math.hypot(ship.vx,ship.vy);$('vel').textContent=(v*1234|0).toLocaleString();
+  $('hdg').textContent=String(((ship.a*180/Math.PI)%360+360)%360|0).padStart(3,'0')+'°';
+  $('dst').textContent=ship.target?(Math.hypot(ship.target.x-ship.x,ship.target.y-ship.y)*0.0213).toFixed(2)+' AU':'—';
+  const s=met|0;$('met').textContent=[s/3600|0,(s/60|0)%60,s%60].map(n=>String(n).padStart(2,'0')).join(':');
+  $('sol').textContent=String(1+(simT/2|0)).padStart(4,'0');
+  if(hover){reticle.style.opacity=1;reticle.style.left=hover.sx+'px';reticle.style.top=hover.sy+'px'}else reticle.style.opacity=0;
+}
+const reticle=$('reticle');
+let hover=null;
+cv.addEventListener('pointermove',e=>{hover=PLANETS.find(p=>p.sx&&Math.hypot(e.clientX-p.sx,e.clientY-p.sy)<Math.max(14,p.sr+8))||null;cv.style.cursor=hover?'pointer':'crosshair'});
+cv.addEventListener('click',e=>{if(hover)go(hover);else if(!ship.manual){ // fly to empty point
+  ship.target=null;}});
+function go(p){setManual(false);ship.target=p;ship.arrived=0;show(p);toast('COURSE PLOTTED',p.n);
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.n===p.n))}
+function show(p){$('pName').textContent=p.n;$('pText').textContent=p.t;
+  $('pData').innerHTML=[['ORBIT',p.d],['DAY',p.day],['MASS',p.m],['YEAR',p.p+' yr']].map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')}
+show({n:'Sol',t:'A G-type main-sequence star. Choose a destination, click a planet, or take manual control.',d:'0 AU',day:'25 d',m:'333,000 M⊕',p:'—'});
+$('list').innerHTML=PLANETS.map(p=>`<li><button data-n="${p.n}">${p.n}<span>${p.d}</span></button></li>`).join('');
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(PLANETS.find(p=>p.n===b.dataset.n)));
+function setManual(v){ship.manual=v;$('manual').classList.toggle('on',v);$('manual').setAttribute('aria-pressed',v);if(v){ship.target=null;toast('MANUAL CONTROL','↑ thrust · ←→ rotate · ↓ brake')}}
+function setFollow(v){follow=v;$('follow').classList.toggle('on',v);$('follow').setAttribute('aria-pressed',v)}
+$('manual').onclick=()=>setManual(!ship.manual);$('follow').onclick=()=>setFollow(!follow);
+$('warp').oninput=e=>{warp=+e.target.value;$('warpV').textContent=warp.toFixed(1)+'×'};
+let tt;function toast(a,b){const t=$('toast');t.innerHTML=`<small>${a}</small>${b}`;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200)}
+// touch steering in manual mode: hold to thrust toward finger
+cv.addEventListener('pointerdown',e=>{if(!ship.manual||e.pointerType==='mouse')return;const s=toScreen(project(ship));ship.a=Math.atan2(e.clientY-s.y,e.clientX-s.x);keys.ArrowUp=1});
+addEventListener('pointerup',()=>{if(ship.manual)keys.ArrowUp=0});
+requestAnimationFrame(frame);
+setTimeout(()=>toast('WELCOME ABOARD, KUSH','Pick a world to begin'),600);
+})();
+</script>
+</body>
+</html>

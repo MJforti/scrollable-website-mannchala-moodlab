@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 180" width="1200" height="180" role="img" aria-label="End of transmission">
+<style>.m{font:400 13px 'Courier New',monospace;letter-spacing:5px}.d{font:800 40px 'Helvetica Neue',Arial,sans-serif;letter-spacing:-1px}
+.w{animation:w 2.4s ease-out infinite}@keyframes w{from{r:4;opacity:1}to{r:90;opacity:0}}@media (prefers-reduced-motion:reduce){.w{animation:none;opacity:0}}</style>
+<rect width="1200" height="180" fill="#050816"/>
+<circle cx="600" cy="62" r="4" fill="none" stroke="#ff7a1a" class="w"/><circle cx="600" cy="62" r="4" fill="#ff7a1a"/>
+<text x="600" y="128" text-anchor="middle" class="d" fill="#f3ead7">End of transmission.</text>
+<text x="600" y="160" text-anchor="middle" class="m" fill="#8a93b8">SIGNAL BOOST WITH A ⭐ · KUSH17NARWAL · OVER &amp; OUT</text>
+</svg>

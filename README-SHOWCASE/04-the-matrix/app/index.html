@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Construct — Wake Up, Operator</title>
+<meta name="description" content="An immersive digital-rain experience with interactive particles, glitch transitions and a choice to make.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+JP:wght@300;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#00ff6a;--g2:#00b34a;--g3:#003b18;--bg:#000;--w:#e9ffef}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--g);font-family:"Share Tech Mono",monospace;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.stage{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:16px;pointer-events:none}
+.scene{display:none;max-width:900px}
+.scene.on{display:block}
+.knock{font-size:clamp(18px,3vw,28px);color:var(--w);text-shadow:0 0 10px var(--g);min-height:2em;white-space:pre-wrap}
+.knock::after{content:"█";animation:b 1s steps(1) infinite;color:var(--g)}
+@keyframes b{50%{opacity:0}}
+.title{font-family:"Noto Sans JP",sans-serif;font-weight:700;font-size:clamp(46px,12vw,170px);letter-spacing:-.02em;line-height:.9;color:var(--w);
+  position:relative;text-shadow:0 0 18px #00ff6a88}
+.title::before,.title::after{content:attr(data-t);position:absolute;inset:0;overflow:hidden}
+.title::before{color:#0ff;transform:translate(-3px,0);clip-path:inset(0 0 60% 0);mix-blend-mode:screen;animation:g1 2.6s infinite steps(1)}
+.title::after{color:#f0f;transform:translate(3px,0);clip-path:inset(55% 0 0 0);mix-blend-mode:screen;animation:g2 3.1s infinite steps(1)}
+@keyframes g1{0%,88%,100%{transform:none;opacity:0}89%{transform:translate(-8px,2px);opacity:1}92%{transform:translate(6px,-1px);opacity:1}95%{opacity:0}}
+@keyframes g2{0%,80%,100%{transform:none;opacity:0}81%{transform:translate(9px,-2px);opacity:1}84%{transform:translate(-5px,1px);opacity:1}87%{opacity:0}}
+.jp{font-family:"Noto Sans JP";font-weight:300;letter-spacing:.6em;font-size:12px;margin-top:22px;color:var(--g2)}
+.lines{margin-top:40px;font-size:clamp(13px,1.6vw,16px);line-height:2;color:var(--g)}
+.choice{display:flex;gap:clamp(20px,6vw,80px);justify-content:center;margin-top:46px;pointer-events:auto;flex-wrap:wrap}
+.pill{border:0;cursor:pointer;width:150px;height:64px;border-radius:32px;font:inherit;font-size:13px;letter-spacing:.3em;color:#fff;position:relative;
+  transition:transform .3s cubic-bezier(.2,.9,.2,1.4),box-shadow .3s}
+.pill.red{background:radial-gradient(circle at 30% 30%,#ff8a8a,#d40000 50%,#5a0000);box-shadow:0 0 30px #ff000055}
+.pill.blue{background:radial-gradient(circle at 30% 30%,#9ac8ff,#0047d4 50%,#00135a);box-shadow:0 0 30px #0060ff55}
+.pill:hover,.pill:focus-visible{transform:scale(1.12) rotate(-6deg);outline:none}
+.pill.red:hover{box-shadow:0 0 60px #ff0000aa}.pill.blue:hover{box-shadow:0 0 60px #0060ffaa}
+.hint{position:fixed;bottom:18px;left:0;right:0;text-align:center;font-size:11px;letter-spacing:.3em;color:var(--g2);pointer-events:none;opacity:.8}
+.hud{position:fixed;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;font-size:11px;color:var(--g2);letter-spacing:.15em;pointer-events:none}
+.hud a{pointer-events:auto;color:var(--g)}
+.glitch-flash{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#00ff6a22 0 3px,transparent 3px 7px);opacity:0}
+.glitch-flash.go{animation:gf .5s steps(5)}
+@keyframes gf{0%{opacity:1;transform:translateX(-10px)}40%{opacity:.6;transform:translateX(14px) skewX(8deg)}80%{opacity:1;transform:translateX(-4px)}100%{opacity:0}}
+body.blue{filter:hue-rotate(160deg) saturate(.5)}
+@media (prefers-reduced-motion:reduce){.title::before,.title::after,.knock::after{animation:none;opacity:0}}
+</style>
+</head>
+<body>
+<canvas id="rain" aria-hidden="true"></canvas>
+<div class="hud"><span id="sig">SIGNAL ▮▮▮▮▯ · CARRIER 7.41</span><span><a href="../../">EXIT ⟶</a></span></div>
+<div class="stage">
+  <div class="scene on" id="s1"><p class="knock" id="knock"></p></div>
+  <div class="scene" id="s2">
+    <h1 class="title" data-t="THE CONSTRUCT">THE CONSTRUCT</h1>
+    <p class="jp">デジタル の 世界 へ ようこそ</p>
+    <div class="lines" id="lines"></div>
+    <div class="choice">
+      <button class="pill blue" id="blue" aria-label="Blue pill: return to sleep">BLUE</button>
+      <button class="pill red" id="red" aria-label="Red pill: see how deep it goes">RED</button>
+    </div>
+  </div>
+  <div class="scene" id="s3">
+    <h1 class="title" data-t="WAKE UP" style="font-size:clamp(40px,10vw,140px)">WAKE UP</h1>
+    <div class="lines">Move to bend the code. Click to send a shockwave. Type anything — it falls with the rain.<br>Hold <b>SPACE</b> to slow time.</div>
+  </div>
+</div>
+<div class="glitch-flash" id="gf"></div>
+<p class="hint" id="hint">CLICK OR PRESS ANY KEY</p>
+<script>
+(()=>{
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv=document.getElementById('rain'),c=cv.getContext('2d');
+const $=id=>document.getElementById(id);
+const GLY='ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ012345789Z:.=*+-<>¦|ç'.split('');
+let W,H,DPR,FS,cols,drops=[],mouse={x:-999,y:-999,on:false},waves=[],slow=1,tSlow=1,density=.55,scene=1,inject=[];
+function resize(){DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;c.setTransform(DPR,0,0,DPR,0,0);
+  FS=W<600?14:18;cols=Math.ceil(W/FS);drops=Array.from({length:cols},(_,i)=>mk(i,true))}
+function mk(i,init){return{x:i*FS,y:init?Math.random()*-H*1.5:-Math.random()*H*.5,v:(.4+Math.random()*.9),len:8+Math.random()*26|0,chars:Array.from({length:40},()=>GLY[Math.random()*GLY.length|0]),off:0,depth:.5+Math.random()*.5}}
+resize();addEventListener('resize',resize);
+addEventListener('pointermove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;mouse.on=true});
+addEventListener('pointerleave',()=>mouse.on=false);
+
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(3,(now-last)/16.67);last=now;
+  slow+=(tSlow-slow)*.08;
+  c.fillStyle='#000';c.fillRect(0,0,W,H);
+  c.textBaseline='top';
+  const speed=(RM?.25:1)*slow*dt;
+  for(let i=0;i<drops.length;i++){
+    if(scene===1&&i%3)continue; if(Math.random()>density&&drops[i].y<0&&scene<3)continue;
+    const d=drops[i];d.y+=d.v*FS*.32*speed;
+    if(Math.random()<.04)d.chars[Math.random()*d.chars.length|0]=GLY[Math.random()*GLY.length|0];
+    c.font=`${Math.round(FS*d.depth)}px "Noto Sans JP",monospace`;
+    for(let k=0;k<d.len;k++){
+      let x=d.x,y=d.y-k*FS;if(y<-FS||y>H)continue;
+      // mouse lens: push glyphs away
+      if(mouse.on&&!RM){const dx=x-mouse.x,dy=y-mouse.y,dd=dx*dx+dy*dy;if(dd<160*160){const f=(1-Math.sqrt(dd)/160);x+=dx*f*.6;y+=dy*f*.25}}
+      for(const w of waves){const dx=x-w.x,dy=y-w.y,dist=Math.hypot(dx,dy),band=Math.abs(dist-w.r);if(band<60){const f=(1-band/60)*w.a*30;x+=dx/dist*f;y+=dy/dist*f}}
+      const a=1-k/d.len;
+      if(k===0){c.fillStyle='#e9ffef';c.shadowColor='#00ff6a';c.shadowBlur=12}
+      else{c.shadowBlur=0;c.fillStyle=`rgba(0,${180+75*a|0},${80*a|0},${a*d.depth})`}
+      c.fillText(d.chars[k%d.chars.length],x,y);
+    }
+    if(d.y-d.len*FS>H)drops[i]=mk(i,false);
+  }
+  c.shadowBlur=0;
+  // injected words fall as bright glyph columns
+  for(let i=inject.length-1;i>=0;i--){const w=inject[i];w.y+=FS*.25*speed;c.font=`700 ${FS}px "Share Tech Mono"`;
+    [...w.t].forEach((ch,k)=>{c.fillStyle=k===w.t.length-1?'#fff':'#7dffb0';c.fillText(ch,w.x,w.y-k*FS)});if(w.y-w.t.length*FS>H)inject.splice(i,1)}
+  for(let i=waves.length-1;i>=0;i--){const w=waves[i];w.r+=14*dt;w.a*=.96;c.strokeStyle=`rgba(0,255,106,${w.a*.6})`;c.lineWidth=1;c.beginPath();c.arc(w.x,w.y,w.r,0,7);c.stroke();if(w.a<.02)waves.splice(i,1)}
+  // mouse halo
+  if(mouse.on&&scene===3){const g=c.createRadialGradient(mouse.x,mouse.y,0,mouse.x,mouse.y,160);g.addColorStop(0,'#00ff6a18');g.addColorStop(1,'#0000');c.fillStyle=g;c.fillRect(mouse.x-160,mouse.y-160,320,320)}
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+const sleep=ms=>new Promise(r=>setTimeout(r,RM?20:ms));
+async function type(el,txt,speed=60){el.textContent='';for(const ch of txt){el.textContent+=ch;await sleep(ch===' '?speed*1.6:speed+Math.random()*40)}}
+function glitch(){$('gf').classList.remove('go');void $('gf').offsetWidth;$('gf').classList.add('go')}
+function goto(n){glitch();scene=n;document.querySelectorAll('.scene').forEach((s,i)=>s.classList.toggle('on',i===n-1));
+  density=n===1?.3:n===2?.55:1}
+let started=false;
+async function intro(){
+  const k=$('knock');
+  await sleep(700);await type(k,'Wake up, operator...');await sleep(1400);
+  await type(k,'You have been dreaming in code.');await sleep(1400);
+  await type(k,'Follow the signal.');await sleep(1200);
+  await type(k,'Something is listening.');await sleep(900);
+  if(!started)enter();
+}
+async function enter(){
+  if(started)return;started=true;goto(2);$('hint').textContent='CHOOSE';
+  const L=$('lines');L.innerHTML='';
+  for(const l of ['Two doors. One signal.','Choose what you want to see.']){const p=document.createElement('div');L.appendChild(p);await type(p,l,28)}
+}
+addEventListener('keydown',e=>{
+  if(scene===1){enter();return}
+  if(e.code==='Space'){e.preventDefault();tSlow=.12;return}
+  if(scene===3&&e.key.length===1){const x=Math.round((Math.random()*W)/FS)*FS;const last=inject.at(-1);
+    if(last&&last.y<FS*2&&performance.now()-last.ts<600){last.t+=e.key.toUpperCase()}else inject.push({x,y:FS,t:e.key.toUpperCase(),ts:performance.now()})}
+});
+addEventListener('keyup',e=>{if(e.code==='Space')tSlow=1});
+addEventListener('pointerdown',e=>{if(scene===1){enter();return}if(scene===3)waves.push({x:e.clientX,y:e.clientY,r:0,a:1})});
+$('red').onclick=e=>{e.stopPropagation();document.body.classList.remove('blue');for(let i=0;i<6;i++)setTimeout(glitch,i*90);
+  setTimeout(()=>{goto(3);$('hint').textContent='MOVE · CLICK · TYPE · HOLD SPACE';waves.push({x:W/2,y:H/2,r:0,a:1.4})},500)};
+$('blue').onclick=e=>{e.stopPropagation();glitch();document.body.classList.add('blue');density=.15;
+  $('lines').innerHTML='<div>The signal fades. You drift back into the comfortable static.</div><div style="opacity:.6;margin-top:12px">…or do you? (the red pill is still there)</div>';
+  setTimeout(()=>document.body.classList.remove('blue'),4200)};
+// signal flicker
+setInterval(()=>{const n=3+Math.random()*2|0;$('sig').textContent=`SIGNAL ${'▮'.repeat(n)}${'▯'.repeat(5-n)} · CARRIER ${(7+Math.random()).toFixed(2)}`},900);
+intro();
+})();
+</script>
+</body>
+</html>
